@@ -156,3 +156,32 @@ If you have to create graphical representation with color scale between red and 
 Notice how naturally, the yellow is displayed in human format and in the middle
 of the scale. And that the quite unusual (but compatible) 'chartreuse' color
 specification has been used in place of the hexadecimal representation.
+
+
+Building arbitrary color from an input string
+---------------------------------------------
+
+Sometimes, you just want to get a color to colorize *something*. If you can turn
+this something into a string, then you can use the ``from_string`` function from
+the module, which will give you a color which will stay the same if the input
+string stays the same::
+
+    >>> from colour import from_string
+    >>> from_string("Something")
+    <Color ...>
+    >>> from_string("Something") == from_string("Something")
+    True
+
+Astring is really just a string, so you can use the ``str()`` function for
+example to turn any object into a string to be fed to the function, and it will
+work (as long as ``str()`` does its job)::
+
+    >>> o = object()
+    >>> from_string(str(o)) == from_string(str(o))
+    True
+
+Of course, although there's a tiny probability that different strings yield the
+same color, most of the time, different inputs will produce different colors::
+
+    >>> from_string("a") != from_string("b")
+    True

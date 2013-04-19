@@ -36,6 +36,7 @@ Please see the documentation of this object for more information.
 
 from __future__ import with_statement, print_function
 
+import hashlib
 import os.path
 import re
 
@@ -543,6 +544,55 @@ def color_scale(begin_hsl, end_hsl, nb):
 
     return [add_v(begin_hsl, mul(step, r)) for r in range(0, nb + 1)]
 
+
+def from_string(data):
+    """Build a color representation of an arbitrary string.
+
+    This allows to quickly get a color from some data, with the additional
+    benefit that the color will be the same as long as the (string
+    representation of the) data is the same.
+
+    >>> from colour import from_string, Color
+
+    Same inputs produce the same result:
+
+    >>> from_string("Something") == from_string("Something")
+    True
+
+    ... but different inputs produce different colors:
+
+    >>> from_string("Something") != from_string("Something else")
+    True
+
+    In any case, we still get a `Color` object:
+
+    >>> isinstance(from_string("Something"), Color)
+    True
+
+    .. note:: The input has to be a Unicode string, or something which can be
+        encoded into UTF-8.
+
+    """
+
+    # Turn the input into a by-3 dividable string. SHA-384 is good because it
+    # divides into 3 components of the same size, which will be used to represne
+    # the RGB values of the color.
+    digest = hashlib.sha384(data.encode('utf-8')).hexdigest()
+
+    # Split the digest into 3 sub-strings of equivalent size.
+    splitted_digest = zip(*[iter(digest)]* int((len(digest) / 3)))
+
+    # Convert those hexadecimal sub-strings into integer and scale them down to
+    # the [0.0, 1.0] range.
+    max_value = float(int("f" * 32, 16))
+    components = (
+        int("".join(s), 16) # Make a number from a list with hex digits
+        / max_value         # Scale it down to [0.0, 1.0]
+        for s in splitted_digest)
+
+    return Color(rgb2hex(components)) # Profit!
+
+
 ##
 ## All purpose object
 ##
@@ -810,3 +860,5 @@ class Color(object):
     def __repr__(self):
         return "<Color %s>" % self.web
 
+    def __eq__(self, other):
+        return self._hsl == other._hsl

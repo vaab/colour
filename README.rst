@@ -28,6 +28,8 @@ Feature
 
   - smooth intuitive color scale generation choosing N color gradients.
 
+  - can pick colors for you to identify objects of your application.
+
 
 Installation
 ============
@@ -235,5 +237,78 @@ But reverse operation is not equivalent !::
 
    >>> black_blue == black_red
    False
+
+
+Picking arbitrary color for a python object
+-------------------------------------------
+
+Basic Usage
+'''''''''''
+
+Sometimes, you just want to pick a color for an object in your application
+often to visually identify this object. Thus, the picked color should be the
+same for same objects, and different for different object.
+
+    >>> foo = object()
+    >>> bar = object()
+
+    >>> Color(pick_for=foo)  # doctest: +ELLIPSIS
+    <Color ...>
+    >>> Color(pick_for=foo) == Color(pick_for=foo)
+    True
+    >>> Color(pick_for=foo) == Color(pick_for=bar)
+    False
+
+Of course, although there's a tiny probability that different strings yield the
+same color, most of the time, different inputs will produce different colors.
+
+Advanced Usage
+''''''''''''''
+
+You can customize your color picking algorithm by providing a ``picker``. A
+``picker`` is a callable that takes an object, and returns something that can
+be instanciated as a color by ``Color``.
+
+    >>> my_picker = lambda obj: "red" if isinstance(obj, int) else "blue"
+    >>> Color(pick_for=3, picker=my_picker, pick_key=None)
+    <Color red>
+    >>> Color(pick_for="foo", picker=my_picker, pick_key=None)
+    <Color blue>
+
+You might want to use a particular picker, but enforce how the picker will
+identify two object as the same (or not). So there's a ``pick_key`` attribute
+that is provided and defaults as equivalent of ``hash`` method and if hash is
+not supported by your object, it'll default to the ``str`` of your object salted
+with the class name.
+
+Thus:
+
+    >>> class MyObj(str): pass
+    >>> my_obj_color = Color(pick_for=MyObj("foo"))
+    >>> my_str_color = Color(pick_for="foo")
+    >>> my_obj_color == my_str_color
+    False
+
+Please make sure your object is hashable or "stringable" before using the
+``RGB_color_picker`` picking mechanism or provide another color picker. Nearly
+all python object are hashable by default so this shouldn't be an issue (ie:
+instances of ``object`` and subclasses are hashable).
+
+Neither ``hash`` nor ``str`` are perfect solution. So feel free to use
+``pick_key`` at ``Color`` instantiation time to set your way to identify
+objects, for instance::
+
+    >>> a = object()
+    >>> b = object()
+    >>> Color(pick_for=a, pick_key=id) == Color(pick_for=b, pick_key=id)
+    False
+
+When chosing a pick key, you should closely consider if you want your color
+to be consistent between runs (this is NOT the case with the last exemple),
+or consistent with the content of your object if its a mutable object.
+
+Default value of ``pick_key`` and ``picker`` ensures that the same color will
+be attributed to same object between different run on different computer for
+most python object.
 
 

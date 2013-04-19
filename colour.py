@@ -36,6 +36,7 @@ Please see the documentation of this object for more information.
 
 from __future__ import with_statement, print_function
 
+import hashlib
 import os.path
 import re
 
@@ -547,6 +548,66 @@ def color_scale(begin_hsl, end_hsl, nb):
 
     return [add_v(begin_hsl, mul(step, r)) for r in range(0, nb + 1)]
 
+
+##
+## Color Pickers
+##
+
+def RGB_color_picker(obj):
+    """Build a color representation from the string representation of an object
+
+    This allows to quickly get a color from some data, with the
+    additional benefit that the color will be the same as long as the
+    (string representation of the) data is the same::
+
+        >>> from colour import RGB_color_picker, Color
+
+    Same inputs produce the same result::
+
+        >>> RGB_color_picker("Something") == RGB_color_picker("Something")
+        True
+
+    ... but different inputs produce different colors::
+
+        >>> RGB_color_picker("Something") != RGB_color_picker("Something else")
+        True
+
+    In any case, we still get a ``Color`` object::
+
+        >>> isinstance(RGB_color_picker("Something"), Color)
+        True
+
+    """
+
+    ## Turn the input into a by 3-dividable string. SHA-384 is good because it
+    ## divides into 3 components of the same size, which will be used to
+    ## represent the RGB values of the color.
+    digest = hashlib.sha384(str(obj).encode('utf-8')).hexdigest()
+
+    ## Split the digest into 3 sub-strings of equivalent size.
+    subsize = int(len(digest) / 3)
+    splitted_digest = [digest[i * subsize: (i + 1) * subsize]
+                       for i in range(3)]
+
+    ## Convert those hexadecimal sub-strings into integer and scale them down
+    ## to the 0..1 range.
+    max_value = float(int("f" * subsize, 16))
+    components = (
+        int(d, 16)     ## Make a number from a list with hex digits
+        / max_value    ## Scale it down to [0.0, 1.0]
+        for d in splitted_digest)
+
+    return Color(rgb2hex(components))  ## Profit!
+
+
+def hash_or_str(obj):
+    try:
+        return hash((type(obj).__name__, obj))
+    except TypeError:
+        ## Adds the type name to make sure two object of different type but
+        ## identical string representation get distinguished.
+        return type(obj).__name__ + str(obj)
+
 ##
 ## All purpose object
 ##
@@ -710,7 +771,15 @@ class Color(object):
 
     _hsl = None   ## internal representation
 
-    def __init__(self, color=None, **kwargs):
+    def __init__(self, color=None,
+                 pick_for=None, picker=RGB_color_picker, pick_key=hash_or_str,
+                 **kwargs):
+
+        if pick_key is None:
+            pick_key = lambda x: x
+
+        if pick_for is not None:
+            color = picker(pick_key(pick_for))
 
         if isinstance(color, Color):
             self.web = color.web

@@ -1,18 +1,32 @@
 from setuptools import setup, find_packages
 
-
-## Ensure that ``./autogen.sh`` was run prior to ``using setup.py``
-import sys
+import sys, os.path
+## Ensure that ``./autogen.sh`` is run prior to using ``setup.py``
 if "%%short-version%%".startswith("%%"):
-    sys.stderr.write(
-        "This source repository was not configured.\n"
-        "Please run ``./autogen.sh`` prior to using ``setup.py``.\n")
-    sys.exit(1)
+    import os, subprocess
+    if not os.path.exists('./autogen.sh'):
+        sys.stderr.write(
+            "This source repository was not configured.\n"
+            "Please ensure ``./autogen.sh`` exists and that you are running "
+            "``setup.py`` from the project root directory.\n")
+        sys.exit(1)
+    os.system('./autogen.sh')
+    cmdline = sys.argv[:]
+    if cmdline[1] == "install":
+        ## XXXvlab: for some reason, this is needed when launched from pip
+        if cmdline[0] == "-c":
+            cmdline[0] = "setup.py"
+        sys.exit(subprocess.call(["python", ] + cmdline))
 
+description_files = [
+    'README.rst',
+    'CHANGELOG.rst',
+    'TODO.rst',
+]
 
-long_description = '\n\n'.join([open('README.rst').read(),
-                                open('CHANGELOG.rst').read(),
-                                open('TODO.rst').read()])
+long_description = '\n\n'.join(open(f).read() 
+                               for f in description_files 
+                               if os.path.exists(f))
 
 ## XXXvlab: Hacking distutils, not very elegant, but the only way I found
 ## to get 'rgb.txt' to get copied next to the colour.py file...
@@ -48,6 +62,7 @@ setup(
     install_requires=[
         'setuptools',
         # -*- Extra requirements: -*-
+        'gitchangelog',
     ],
     entry_points="",
 )

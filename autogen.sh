@@ -2,6 +2,8 @@
 
 exname="$(basename "$0")"
 
+FILES="setup.py CHANGELOG.rst"
+
 ##
 ## Functions
 ##
@@ -81,7 +83,7 @@ function die() {
 ## Code
 ##
 
-depends git sed grep date gitchangelog
+depends git sed grep date
 
 if ! test -e "setup.py" >/dev/null 2>&1; then
     die "No 'setup.py'... this script is meant to work with a python project"
@@ -131,22 +133,26 @@ function set_version_setup_py() {
     version=$(get_current_version)
     short_version=$(echo "$version" | cut -f 1,2,3 -d ".")
 
-    "$sed" -ri "s/%%version%%/$version/g" setup.py \
-                                       CHANGELOG.rst &&
-    "$sed" -ri "s/%%short-version%%/${short_version}/g" \
-                                       setup.py \
-                                       CHANGELOG.rst &&
+    for file in $FILES; do
+        if [ -e "$file" ]; then
+            "$sed" -ri "s/%%short-version%%/${short_version}/g" "$file" &&
+            "$sed" -ri "s/%%version%%/$version/g" "$file" || return 1
+        fi
+    done
+
     echo "Version updated to $version."
 }
 
-
-"$gitchangelog" > CHANGELOG.rst
-
-if [ "$?" != 0 ]; then
-    print_error "Error while generating changelog."
+if type -p gitchangelog > /dev/null 2>&1; then
+    gitchangelog > CHANGELOG.rst
+    if [ "$?" != 0 ]; then
+        echo "Changelog NOT generated. An error occured while running \`\`gitchangelog\`\`." >&2
+    else 
+        echo "Changelog generated."
+    fi
+else
+    echo "Changelog NOT generated because you don't have \`\`gitchangelog\`\`."
 fi
-echo "Changelog generated."
-
 
 set_version_setup_py
 if [ "$?" != 0 ]; then

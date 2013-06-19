@@ -34,7 +34,7 @@ Please see the documentation of this object for more information.
 
 """
 
-from __future__ import with_statement # This isn't required in Python 2.6
+from __future__ import with_statement, print_function
 
 import os.path
 import re
@@ -73,11 +73,6 @@ class C_RGB:
     >>> RGB.BLUE
     (0.0, 0.0, 1.0)
 
-    >>> RGB.DONOTEXISTS  # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-    ...
-    AttributeError: class HSL has no attribute 'DONOTEXISTS'
-
     """
 
     def __getattr__(self, value):
@@ -96,11 +91,6 @@ class C_HEX:
     >>> HEX.BLUE
     '#00f'
 
-    >>> HEX.DONOTEXISTS  # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-    ...
-    AttributeError: class HSL has no attribute 'DONOTEXISTS'
-
     """
 
     def __getattr__(self, value):
@@ -115,7 +105,7 @@ HEX = C_HEX()
 ##
 
 
-def hsl2rgb((h, s, l)):
+def hsl2rgb(hsl):
     """Convert HSL representation towards RGB
 
     :param h: Hue, position around the chromatic circle (h=1 equiv h=0)
@@ -189,9 +179,7 @@ def hsl2rgb((h, s, l)):
     ValueError: Lightness must be between 0 and 1.
 
     """
-
-    ## Check and convert
-    h, s, l = [float(v) for v in h, s, l]
+    h, s, l = [float(v) for v in hsl]
 
     if not (0.0 - FLOAT_ERROR <= s <= 1.0 + FLOAT_ERROR):
         raise ValueError("Saturation must be between 0 and 1.")
@@ -215,7 +203,7 @@ def hsl2rgb((h, s, l)):
     return r, g, b
 
 
-def rgb2hsl((r, g, b)):
+def rgb2hsl(rgb):
     """Convert RGB representation towards HSL
 
     :param r: Red amount (float between 0 and 1)
@@ -271,11 +259,9 @@ def rgb2hsl((r, g, b)):
     ValueError: Blue must be between 0 and 1. You provided 1.5.
 
     """
+    r, g, b = [float(v) for v in rgb]
 
-    ## Check and convert
-    r, g, b = [float(v) for v in r, g, b]
-
-    for name, v in {'Red': r, 'Green': g, 'Blue': b}.iteritems():
+    for name, v in list({'Red': r, 'Green': g, 'Blue': b}.items()):
         if not (0 - FLOAT_ERROR <= v <= 1 + FLOAT_ERROR):
             raise ValueError("%s must be between 0 and 1. You provided %r."
                              % (name, v))
@@ -412,7 +398,7 @@ def hex2rgb(str_rgb):
         raise ValueError("Invalid value %r provided for rgb color."
                          % str_rgb)
 
-    return tuple([float(int(v, 16))/255 for v in r, g, b])
+    return tuple([float(int(v, 16))/255 for v in (r, g, b)])
 
 
 def hex2web(hex):
@@ -519,7 +505,7 @@ def web2hex(web, force_long=False):
     ## convert dec to hex:
 
     r, g, b = result[0:3], result[4:7], result[8:11]
-    return rgb2hex([float(int(v))/255 for v in r, g, b], force_long)
+    return rgb2hex([float(int(v))/255 for v in (r, g, b)], force_long)
 
 
 def color_scale(begin_hsl, end_hsl, nb):
@@ -662,7 +648,7 @@ class Color(object):
         >>> c
         <Color #7f0000>
 
-        >>> print c
+        >>> print(c)
         #7f0000
 
     You can try to query unexisting attributes:
@@ -703,7 +689,7 @@ class Color(object):
         else:
             self.web = color if color else 'black'
 
-        for k, v in kwargs.iteritems():
+        for k, v in list(kwargs.items()):
             setattr(self, k, v)
 
     def __getattr__(self, label):

@@ -1,6 +1,15 @@
 from setuptools import setup, find_packages
 
 
+## Ensure that ``./autogen.sh`` was run prior to ``using setup.py``
+import sys
+if "%%short-version%%".startswith("%%"):
+    sys.stderr.write(
+        "This source repository was not configured.\n"
+        "Please run ``./autogen.sh`` prior to using ``setup.py``.\n")
+    sys.exit(1)
+
+
 long_description = '\n\n'.join([open('README.rst').read(),
                                 open('CHANGELOG.rst').read(),
                                 open('TODO.rst').read()])

@@ -1,0 +1,6 @@
+language: python
+python:
+  - "2.7"
+  - "2.6"
+install: ./autogen.sh
+script: python -m doctest -d colour.py

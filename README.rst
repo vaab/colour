@@ -22,6 +22,19 @@ Feature
   - smooth intuitive color scale generation choosing N color gradients.
 
 
+Installation
+============
+
+You don't need to download the GIT version of the code as ``colour`` is
+available on the PyPI. So you should be able to run::
+
+    pip install colour
+
+Please note that if you got the code thanks to git. You'll need to execute
+``./autogen.sh`` in order to generate missing files as the ``CHANGELOG.rst`` and
+the version information in ``setup.py``.
+
+
 Usage
 =====
 

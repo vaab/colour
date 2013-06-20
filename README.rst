@@ -2,7 +2,14 @@
 Colour
 ======
 
+.. image:: https://pypip.in/v/colour/badge.png
+    :target: https://pypi.python.org/pypi/colour
+
+.. image:: https://secure.travis-ci.org/vaab/colour.png?branch=master
+    :target: http://travis-ci.org/vaab/colour
+
 Converts and manipulates common color representation (RGB, HSV, web, ...)
+
 
 Feature
 =======

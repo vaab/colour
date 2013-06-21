@@ -276,15 +276,15 @@ def rgb2hsl(rgb):
             raise ValueError("%s must be between 0 and 1. You provided %r."
                              % (name, v))
 
-    vmin = min(r, g, b) ## Min. value of RGB
-    vmax = max(r, g, b) ## Max. value of RGB
-    diff = vmax - vmin  ## Delta RGB value
+    vmin = min(r, g, b)  ## Min. value of RGB
+    vmax = max(r, g, b)  ## Max. value of RGB
+    diff = vmax - vmin   ## Delta RGB value
 
     vsum = vmin + vmax
 
     l = vsum / 2
 
-    if diff == 0.0: ## This is a gray, no chroma...
+    if diff == 0.0:  ## This is a gray, no chroma...
         return (0.0, 0.0, l)
 
     ##
@@ -297,16 +297,16 @@ def rgb2hsl(rgb):
     else:
         s = diff / (2.0 - vsum)
 
-    dr = (((vmax - r) / 6 ) + (diff / 2)) / diff
-    dg = (((vmax - g) / 6 ) + (diff / 2)) / diff
-    db = (((vmax - b) / 6 ) + (diff / 2)) / diff
+    dr = (((vmax - r) / 6) + (diff / 2)) / diff
+    dg = (((vmax - g) / 6) + (diff / 2)) / diff
+    db = (((vmax - b) / 6) + (diff / 2)) / diff
 
     if r == vmax:
         h = db - dg
     elif g == vmax:
-        h = (1.0/3) + dr - db
+        h = (1.0 / 3) + dr - db
     elif b == vmax:
-        h = (2.0/3) + dg - dr
+        h = (2.0 / 3) + dg - dr
 
     if h < 0: h += 1
     if h > 1: h -= 1
@@ -374,7 +374,7 @@ def rgb2hex(rgb, force_long=False):
 def hex2rgb(str_rgb):
     """Transform hex RGB representation to RGB tuple
 
-    :param rgb: 3 hex char or 6 hex char string representation
+    :param str_rgb: 3 hex char or 6 hex char string representation
     :rtype: RGB 3-uple of float between 0 and 1
 
     >>> from colour import hex2rgb
@@ -408,7 +408,7 @@ def hex2rgb(str_rgb):
         raise ValueError("Invalid value %r provided for rgb color."
                          % str_rgb)
 
-    return tuple([float(int(v, 16))/255 for v in (r, g, b)])
+    return tuple([float(int(v, 16)) / 255 for v in (r, g, b)])
 
 
 def hex2web(hex):
@@ -451,6 +451,7 @@ def hex2web(hex):
            hex[5] == hex[6]:
             return '#' + hex[1] + hex[3] + hex[5]
     return hex
+
 
 def web2hex(web, force_long=False):
     """Converts WEB representation to HEX
@@ -495,12 +496,13 @@ def web2hex(web, force_long=False):
 
     """
     if web.startswith('#'):
-        if LONG_HEX_COLOR.match(web) or (
-            SHORT_HEX_COLOR.match(web) and not force_long):
+        if (LONG_HEX_COLOR.match(web) or
+            (not force_long and SHORT_HEX_COLOR.match(web))):
             return web.lower()
         elif SHORT_HEX_COLOR.match(web) and force_long:
             return '#' + ''.join([("%s" % (t,)) * 2 for t in web[1:]])
-        raise AttributeError("%r is not in web format. Need 3 or 6 hex digit." % web)
+        raise AttributeError(
+            "%r is not in web format. Need 3 or 6 hex digit." % web)
 
     result = None
     with open(RGB_FILE) as f:
@@ -509,13 +511,13 @@ def web2hex(web, force_long=False):
                 result = line[0:11]
                 break
 
-    if result == None:
+    if result is None:
         raise ValueError("%r is not a recognized color." % web)
 
     ## convert dec to hex:
 
     r, g, b = result[0:3], result[4:7], result[8:11]
-    return rgb2hex([float(int(v))/255 for v in (r, g, b)], force_long)
+    return rgb2hex([float(int(v)) / 255 for v in (r, g, b)], force_long)
 
 
 def color_scale(begin_hsl, end_hsl, nb):
@@ -527,19 +529,21 @@ def color_scale(begin_hsl, end_hsl, nb):
     ...                                               (1, 1, 0.5), 3)]
     ['#f00', '#0f0', '#00f', '#f00']
 
-    >>> [rgb2hex(hsl2rgb(hsl)) for hsl in color_scale((0, 0, 0), (0, 0, 1), 15)]
-    ['#000', '#111', '#222', '#333', '#444', '#555', '#666', '#777', '#888', '#999', '#aaa', '#bbb', '#ccc', '#ddd', '#eee', '#fff']
+    >>> [rgb2hex(hsl2rgb(hsl))
+    ...  for hsl in color_scale((0, 0, 0),
+    ...                         (0, 0, 1),
+    ...                         15)]  # doctest: +ELLIPSIS
+    ['#000', '#111', '#222', ..., '#ccc', '#ddd', '#eee', '#fff']
 
     """
 
-    step = tuple([float(end_hsl[i] - begin_hsl[i])/nb for i in range(0, 3)])
+    step = tuple([float(end_hsl[i] - begin_hsl[i]) / nb for i in range(0, 3)])
 
     def mul(step, value):
         return tuple([v * value for v in step])
 
     def add_v(step, step2):
         return tuple([v + step2[i] for i, v in enumerate(step)])
-
 
     return [add_v(begin_hsl, mul(step, r)) for r in range(0, nb + 1)]
 
@@ -679,11 +683,11 @@ class Color(object):
 #     >>> b.cmyk
 
 
-    Check recursive init
-    --------------------
+    Recursive init
+    --------------
 
     To support blind convertion of web strings (or already converted object),
-    the Color object supports instanciation with another Color object.
+    the Color object supports instantiation with another Color object.
 
         >>> Color(Color(Color('red')))
         <Color red>

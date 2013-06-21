@@ -47,7 +47,7 @@ heavily documented and provide a lot of examples in doctest format.
 Here is a reduced sample of a common usage scenario:
 
 
-Instanciation
+Instantiation
 -------------
 
 Let's create blue color:
@@ -131,7 +131,7 @@ human, or 3-digit, or 6-digit hex representation depending which is usable::
 Ranges of colors
 ----------------
 
-You can get some color scale of variation between two Color objects quite
+You can get some color scale of variation between two ``Color`` objects quite
 easily. Here, is the color scale of the rainbow between red and blue:
 
     >>> red = Color("red")

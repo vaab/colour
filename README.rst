@@ -156,3 +156,84 @@ If you have to create graphical representation with color scale between red and 
 Notice how naturally, the yellow is displayed in human format and in the middle
 of the scale. And that the quite unusual (but compatible) 'chartreuse' color
 specification has been used in place of the hexadecimal representation.
+
+
+Color comparison
+----------------
+
+Sane default
+''''''''''''
+
+Color comparison is a vast subject. However, it might seem quite straitforward for
+you. ``Colour`` uses a configurable default way of comparing color that might suit
+your needs::
+
+    >>> Color("red") == Color("#f00") == Color("blue", hue=0)
+    True
+
+The default comparison algorithm focus only on the "web" representation which is
+equivalent to comparing the long hex representation (ie: #FF0000) or to be more
+specific, it is equivalent to compare the amount of red, green, and blue composant
+of the RGB representation, each of these value being quantized to a 256 value scale.
+
+This default comparison is a practical and convenient way to measure the actual
+color equivalence on your screen, or in your video card memory.
+
+But this comparison wouldn't make the difference between a black red, and a
+black blue, which both are black::
+
+   >>> black_red = Color("red", luminance=0)
+   >>> black_blue = Color("blue", luminance=0)
+
+   >>> black_red == black_blue
+   True
+
+
+Customization
+'''''''''''''
+
+But, this is not the sole way to compare two colors. As I'm quite lazy, I'm providing
+you a way to customize it to your needs. Thus::
+
+   >>> from colour import RGB_equivalence, HSL_equivalence
+   >>> black_red = Color("red", luminance=0, equality=HSL_equivalence)
+   >>> black_blue = Color("blue", luminance=0, equality=HSL_equivalence)
+
+   >>> black_red == black_blue
+   False
+
+As you might have already guessed, the sane default is ``RGB_equivalence``, so::
+
+   >>> black_red = Color("red", luminance=0, equality=RGB_equivalence)
+   >>> black_blue = Color("blue", luminance=0, equality=RGB_equivalence)
+
+   >>> black_red == black_blue
+   True
+
+Here's how you could implement your unique comparison function::
+
+   >>> saturation_equivalence = lambda c1, c2: c1.saturation == c2.saturation
+   >>> red = Color("red", equality=saturation_equivalence)
+   >>> blue = Color("blue", equality=saturation_equivalence)
+   >>> white = Color("white", equality=saturation_equivalence)
+
+   >>> red == blue
+   True
+   >>> white == red
+   False
+
+Note: When comparing 2 colors, *only* the equality function *of the first
+color will be used*. Thus::
+
+   >>> black_red = Color("red", luminance=0, equality=RGB_equivalence)
+   >>> black_blue = Color("blue", luminance=0, equality=HSL_equivalence)
+
+   >>> black_red == black_blue
+   True
+
+But reverse operation is not equivalent !::
+
+   >>> black_blue == black_red
+   False
+
+

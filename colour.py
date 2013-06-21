@@ -692,6 +692,20 @@ class Color(object):
         >>> Color(Color(Color('red')))
         <Color red>
 
+    Equality support
+    ----------------
+
+    Default equality is RGB hex comparison:
+
+        >>> Color('red') == Color('blue')
+        False
+
+    But this can be changed:
+
+        >>> saturation_equality = lambda c1, c2: c1.luminance == c2.luminance
+        >>> Color('red', equality=saturation_equality) == Color('blue')
+        True
+
     """
 
     _hsl = None   ## internal representation
@@ -703,6 +717,8 @@ class Color(object):
         else:
             self.web = color if color else 'black'
 
+        self.equality = RGB_equivalence
+
         for k, v in kwargs.items():
             setattr(self, k, v)
 
@@ -712,7 +728,7 @@ class Color(object):
         raise AttributeError("'%s' not found" % label)
 
     def __setattr__(self, label, value):
-        if label != "_hsl":
+        if label not in ["_hsl", "equality"]:
             fc = getattr(self, 'set_' + label)
             fc(value)
         else:
@@ -814,3 +830,9 @@ class Color(object):
     def __repr__(self):
         return "<Color %s>" % self.web
 
+    def __eq__(self, other):
+        return self.equality(self, other)
+
+
+RGB_equivalence = lambda c1, c2: c1.hex_l == c2.hex_l
+HSL_equivalence = lambda c1, c2: c1._hsl == c2._hsl

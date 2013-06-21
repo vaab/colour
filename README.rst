@@ -120,12 +120,12 @@ We might want to de-saturate this color:
 And of course, the string convertion will give the web representation which is
 human, or 3-digit, or 6-digit hex representation depending which is usable::
 
-    >>> print "%s" % c
-    #bf40bf
+    >>> "%s" % c
+    '#bf40bf'
 
     >>> c.luminance = 1
-    >>> print "%s" % c
-    white
+    >>> "%s" % c
+    'white'
 
 
 Ranges of colors

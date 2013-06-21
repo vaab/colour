@@ -312,3 +312,38 @@ be attributed to same object between different run on different computer for
 most python object.
 
 
+Color factory
+-------------
+
+As you might have noticed, there are few attributes that you might want to see
+attached to all of your colors as ``equality`` for equality comparison support,
+or ``picker``, ``pick_key`` to configure your object color picker.
+
+You can create a customized ``Color`` factory thanks to the ``make_color_factory``::
+
+    >>> from colour import make_color_factory, HSL_equivalence, RGB_color_picker
+
+    >>> get_color = make_color_factory(
+    ...    equality=HSL_equivalence,
+    ...    picker=RGB_color_picker,
+    ...    pick_key=str,
+    ... )
+
+All color created thanks to ``CustomColor`` class instead of the default one
+would get the specified attributes by default::
+
+    >>> black_red = get_color("red", luminance=0)
+    >>> black_blue = get_color("blue", luminance=0)
+
+Of course, these are always instances of ``Color`` class::
+
+    >>> isinstance(black_red, Color)
+    True
+
+Equality was changed from normal defaults, so::
+
+    >>> black_red == black_blue
+    False
+
+This because the default equivalence of ``Color`` was set to
+``HSL_equivalence``.

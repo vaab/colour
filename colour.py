@@ -612,7 +612,6 @@ def hash_or_str(obj):
 ## All purpose object
 ##
 
-
 class Color(object):
     """Abstraction of a color object
 
@@ -905,3 +904,11 @@ class Color(object):
 
 RGB_equivalence = lambda c1, c2: c1.hex_l == c2.hex_l
 HSL_equivalence = lambda c1, c2: c1._hsl == c2._hsl
+
+
+def make_color_factory(**kwargs_defaults):
+    def ColorFactory(*args, **kwargs):
+        new_kwargs = kwargs_defaults.copy()
+        new_kwargs.update(kwargs)
+        return Color(*args, **new_kwargs)
+    return ColorFactory

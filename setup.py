@@ -60,7 +60,6 @@ setup(
     namespace_packages=[],
     zip_safe=False,
     install_requires=[
-        'setuptools',
         # -*- Extra requirements: -*-
         'gitchangelog',
     ],

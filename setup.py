@@ -54,7 +54,7 @@ setup(
     author='Valentin Lab',
     author_email='valentin.lab@kalysto.org',
     url='http://github.com/vaab/colour',
-    license='GPL License',
+    license='BSD License',
     py_modules=['colour'],
     data_files=['rgb.txt'],
     namespace_packages=[],

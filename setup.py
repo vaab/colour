@@ -60,8 +60,6 @@ setup(
     namespace_packages=[],
     zip_safe=False,
     install_requires=[
-        # -*- Extra requirements: -*-
-        'gitchangelog',
     ],
     entry_points="",
 )

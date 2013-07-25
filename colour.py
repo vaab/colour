@@ -657,7 +657,7 @@ def web2hex(web, force_long=False):
 
     r, g, b = [None] * 3
     for line in RGB_NAMES:
-        if line[3] == web:
+        if line[3].lower() == web.lower():
             r, g, b = line[:3]
             break
 

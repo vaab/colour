@@ -56,7 +56,6 @@ setup(
     url='http://github.com/vaab/colour',
     license='BSD License',
     py_modules=['colour'],
-    data_files=['rgb.txt'],
     namespace_packages=[],
     zip_safe=False,
     install_requires=[

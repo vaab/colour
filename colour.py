@@ -67,7 +67,7 @@ RGB_NAMES = (
     (255, 127, 80, 'Coral'),
     (100, 149, 237, 'CornflowerBlue'),
     (255, 248, 220, 'Cornsilk'),
-    (220, 20, 60, 'Crimson')
+    (220, 20, 60, 'Crimson'),
     (0, 255, 255, 'Cyan'),
     (0, 0, 139, 'DarkBlue'),
     (0, 139, 139, 'DarkCyan'),
@@ -132,7 +132,7 @@ RGB_NAMES = (
     (119, 136, 153, 'LightSlateGrey'),
     (176, 196, 222, 'LightSteelBlue'),
     (255, 255, 224, 'LightYellow'),
-    (0, 255, 0, 'Lime')
+    (0, 255, 0, 'Lime'),
     (50, 205, 50, 'LimeGreen'),
     (250, 240, 230, 'Linen'),
     (255, 0, 255, 'Magenta'),

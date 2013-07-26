@@ -28,13 +28,6 @@ long_description = '\n\n'.join(open(f).read()
                                for f in description_files 
                                if os.path.exists(f))
 
-## XXXvlab: Hacking distutils, not very elegant, but the only way I found
-## to get 'rgb.txt' to get copied next to the colour.py file...
-## Any suggestions are welcome.
-from distutils.command.install import INSTALL_SCHEMES
-for scheme in INSTALL_SCHEMES.values():
-    scheme['data'] = scheme['purelib']
-
 setup(
     name='colour',
     version='%%version%%',
@@ -56,7 +49,6 @@ setup(
     url='http://github.com/vaab/colour',
     license='BSD License',
     py_modules=['colour'],
-    data_files=['rgb.txt'],
     namespace_packages=[],
     zip_safe=False,
     install_requires=[

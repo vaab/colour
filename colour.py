@@ -263,7 +263,6 @@ HEX = C_HEX()
 ## Convertion function
 ##
 
-
 def hsl2rgb(hsl):
     """Convert HSL representation towards RGB
 
@@ -356,7 +355,7 @@ def hsl2rgb(hsl):
     v1 = 2.0 * l - v2
 
     r = _hue2rgb(v1, v2, h + (1.0 / 3))
-    g = _hue2rgb(v1, v2, h          )
+    g = _hue2rgb(v1, v2, h)
     b = _hue2rgb(v1, v2, h - (1.0 / 3))
 
     return r, g, b
@@ -656,7 +655,7 @@ def web2hex(web, force_long=False):
             (not force_long and SHORT_HEX_COLOR.match(web))):
             return web.lower()
         elif SHORT_HEX_COLOR.match(web) and force_long:
-            return '#' + ''.join([("%s" % (t,)) * 2 for t in web[1:]])
+            return '#' + ''.join([("%s" % (t, )) * 2 for t in web[1:]])
         raise AttributeError(
             "%r is not in web format. Need 3 or 6 hex digit." % web)
 
@@ -987,7 +986,6 @@ class Color(object):
     def get_web(self):
         return hex2web(self.hex)
 
-
     ##
     ## Set
     ##
@@ -1055,6 +1053,7 @@ HSL_equivalence = lambda c1, c2: c1._hsl == c2._hsl
 
 
 def make_color_factory(**kwargs_defaults):
+
     def ColorFactory(*args, **kwargs):
         new_kwargs = kwargs_defaults.copy()
         new_kwargs.update(kwargs)

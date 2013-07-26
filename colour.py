@@ -50,6 +50,7 @@ FLOAT_ERROR = 0.0000005
 RGB_NAMES = [
     (240, 248, 255, 'AliceBlue'),
     (250, 235, 215, 'AntiqueWhite'),
+    (0, 255, 255, 'Aqua'),
     (127, 255, 212, 'Aquamarine'),
     (240, 255, 255, 'Azure'),
     (245, 245, 220, 'Beige'),
@@ -66,6 +67,7 @@ RGB_NAMES = [
     (255, 127, 80, 'Coral'),
     (100, 149, 237, 'CornflowerBlue'),
     (255, 248, 220, 'Cornsilk'),
+    (220, 20, 60, 'Crimson'),
     (0, 255, 255, 'Cyan'),
     (0, 0, 139, 'DarkBlue'),
     (0, 139, 139, 'DarkCyan'),
@@ -94,17 +96,19 @@ RGB_NAMES = [
     (178, 34, 34, 'Firebrick'),
     (255, 250, 240, 'FloralWhite'),
     (34, 139, 34, 'ForestGreen'),
+    (255, 0, 255, 'Fuchsia'),
     (220, 220, 220, 'Gainsboro'),
     (248, 248, 255, 'GhostWhite'),
     (255, 215, 0, 'Gold'),
     (218, 165, 32, 'Goldenrod'),
-    (190, 190, 190, 'Gray'),
-    (0, 255, 0, 'Green'),
+    (128, 128, 128, 'Gray'),
+    (0, 128, 0, 'Green'),
     (173, 255, 47, 'GreenYellow'),
-    (190, 190, 190, 'Grey'),
+    (128, 128, 128, 'Grey'),
     (240, 255, 240, 'Honeydew'),
     (255, 105, 180, 'HotPink'),
     (205, 92, 92, 'IndianRed'),
+    (75, 0, 130, 'Indigo'),
     (255, 255, 240, 'Ivory'),
     (240, 230, 140, 'Khaki'),
     (230, 230, 250, 'Lavender'),
@@ -128,10 +132,11 @@ RGB_NAMES = [
     (119, 136, 153, 'LightSlateGrey'),
     (176, 196, 222, 'LightSteelBlue'),
     (255, 255, 224, 'LightYellow'),
+    (0, 255, 0, 'Lime'),
     (50, 205, 50, 'LimeGreen'),
     (250, 240, 230, 'Linen'),
     (255, 0, 255, 'Magenta'),
-    (176, 48, 96, 'Maroon'),
+    (128, 0, 0, 'Maroon'),
     (102, 205, 170, 'MediumAquamarine'),
     (0, 0, 205, 'MediumBlue'),
     (186, 85, 211, 'MediumOrchid'),
@@ -149,6 +154,7 @@ RGB_NAMES = [
     (0, 0, 128, 'Navy'),
     (0, 0, 128, 'NavyBlue'),
     (253, 245, 230, 'OldLace'),
+    (128, 128, 0, 'Olive'),
     (107, 142, 35, 'OliveDrab'),
     (255, 165, 0, 'Orange'),
     (255, 69, 0, 'OrangeRed'),
@@ -163,7 +169,7 @@ RGB_NAMES = [
     (255, 192, 203, 'Pink'),
     (221, 160, 221, 'Plum'),
     (176, 224, 230, 'PowderBlue'),
-    (160, 32, 240, 'Purple'),
+    (128, 0, 128, 'Purple'),
     (255, 0, 0, 'Red'),
     (188, 143, 143, 'RosyBrown'),
     (65, 105, 225, 'RoyalBlue'),
@@ -173,6 +179,7 @@ RGB_NAMES = [
     (46, 139, 87, 'SeaGreen'),
     (255, 245, 238, 'Seashell'),
     (160, 82, 45, 'Sienna'),
+    (192, 192, 192, 'Silver'),
     (135, 206, 235, 'SkyBlue'),
     (106, 90, 205, 'SlateBlue'),
     (112, 128, 144, 'SlateGray'),
@@ -865,7 +872,7 @@ class Color(object):
         >>> c.hex
         '#0ff'
         >>> c
-        <Color cyan>
+        <Color aqua>
 
         >>> c = Color('blue', luminance=0.75)
         >>> c

@@ -23,12 +23,15 @@ Feature
     ``hsl2rgb`` ...)
 
   - ``web`` format that use the smallest representation between 6-digit,
-    3-digit, fully spelled color, that is compatible with CSS or HTML color
-    specifications.
+    3-digit, fully spelled color, that is following `W3C color naming`_ for
+    CSS or HTML color specifications.
 
   - smooth intuitive color scale generation choosing N color gradients.
 
   - can pick colors for you to identify objects of your application.
+
+
+.. _W3C color naming: http://www.w3.org/TR/css3-color/#svg-color
 
 
 Installation
@@ -111,7 +114,7 @@ All these property are read/write, so let's add some red to this color:
 
     >>> c.red = 1
     >>> c
-    <Color magenta>
+    <Color fuchsia>
 
 We might want to de-saturate this color:
 
@@ -139,7 +142,7 @@ easily. Here, is the color scale of the rainbow between red and blue:
     >>> red = Color("red")
     >>> blue = Color("blue")
     >>> list(red.range_to(blue, 5))
-    [<Color red>, <Color yellow>, <Color green>, <Color cyan>, <Color blue>]
+    [<Color red>, <Color yellow>, <Color lime>, <Color aqua>, <Color blue>]
 
 Or the different amount of gray between black and white:
 
@@ -149,11 +152,12 @@ Or the different amount of gray between black and white:
     [<Color black>, <Color #333>, <Color #666>, <Color #999>, <Color #ccc>, <Color white>]
 
 
-If you have to create graphical representation with color scale between red and green:
+If you have to create graphical representation with color scale
+between red and green ('lime' color is full green):
 
-    >>> green = Color("green")
-    >>> list(red.range_to(green, 5))
-    [<Color red>, <Color #ff7f00>, <Color yellow>, <Color chartreuse>, <Color green>]
+    >>> lime = Color("lime")
+    >>> list(red.range_to(lime, 5))
+    [<Color red>, <Color #ff7f00>, <Color yellow>, <Color chartreuse>, <Color lime>]
 
 Notice how naturally, the yellow is displayed in human format and in the middle
 of the scale. And that the quite unusual (but compatible) 'chartreuse' color

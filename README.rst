@@ -114,7 +114,7 @@ All these property are read/write, so let's add some red to this color:
 
     >>> c.red = 1
     >>> c
-    <Color fuchsia>
+    <Color magenta>
 
 We might want to de-saturate this color:
 
@@ -142,7 +142,7 @@ easily. Here, is the color scale of the rainbow between red and blue:
     >>> red = Color("red")
     >>> blue = Color("blue")
     >>> list(red.range_to(blue, 5))
-    [<Color red>, <Color yellow>, <Color lime>, <Color aqua>, <Color blue>]
+    [<Color red>, <Color yellow>, <Color lime>, <Color cyan>, <Color blue>]
 
 Or the different amount of gray between black and white:
 

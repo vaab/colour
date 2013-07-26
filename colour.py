@@ -50,23 +50,23 @@ FLOAT_ERROR = 0.0000005
 RGB_NAMES = [
     (240, 248, 255, 'AliceBlue'),
     (250, 235, 215, 'AntiqueWhite'),
-    (127, 255, 212, 'aquamarine'),
-    (240, 255, 255, 'azure'),
-    (245, 245, 220, 'beige'),
-    (255, 228, 196, 'bisque'),
-    (0, 0, 0, 'black'),
+    (127, 255, 212, 'Aquamarine'),
+    (240, 255, 255, 'Azure'),
+    (245, 245, 220, 'Beige'),
+    (255, 228, 196, 'Bisque'),
+    (0, 0, 0, 'Black'),
     (255, 235, 205, 'BlanchedAlmond'),
-    (0, 0, 255, 'blue'),
+    (0, 0, 255, 'Blue'),
     (138, 43, 226, 'BlueViolet'),
-    (165, 42, 42, 'brown'),
-    (222, 184, 135, 'burlywood'),
+    (165, 42, 42, 'Brown'),
+    (222, 184, 135, 'Burlywood'),
     (95, 158, 160, 'CadetBlue'),
-    (127, 255, 0, 'chartreuse'),
-    (210, 105, 30, 'chocolate'),
-    (255, 127, 80, 'coral'),
+    (127, 255, 0, 'Chartreuse'),
+    (210, 105, 30, 'Chocolate'),
+    (255, 127, 80, 'Coral'),
     (100, 149, 237, 'CornflowerBlue'),
-    (255, 248, 220, 'cornsilk'),
-    (0, 255, 255, 'cyan'),
+    (255, 248, 220, 'Cornsilk'),
+    (0, 255, 255, 'Cyan'),
     (0, 0, 139, 'DarkBlue'),
     (0, 139, 139, 'DarkCyan'),
     (184, 134, 11, 'DarkGoldenrod'),
@@ -91,23 +91,23 @@ RGB_NAMES = [
     (105, 105, 105, 'DimGray'),
     (105, 105, 105, 'DimGrey'),
     (30, 144, 255, 'DodgerBlue'),
-    (178, 34, 34, 'firebrick'),
+    (178, 34, 34, 'Firebrick'),
     (255, 250, 240, 'FloralWhite'),
     (34, 139, 34, 'ForestGreen'),
-    (220, 220, 220, 'gainsboro'),
+    (220, 220, 220, 'Gainsboro'),
     (248, 248, 255, 'GhostWhite'),
-    (255, 215, 0, 'gold'),
-    (218, 165, 32, 'goldenrod'),
-    (190, 190, 190, 'gray'),
-    (0, 255, 0, 'green'),
+    (255, 215, 0, 'Gold'),
+    (218, 165, 32, 'Goldenrod'),
+    (190, 190, 190, 'Gray'),
+    (0, 255, 0, 'Green'),
     (173, 255, 47, 'GreenYellow'),
-    (190, 190, 190, 'grey'),
-    (240, 255, 240, 'honeydew'),
+    (190, 190, 190, 'Grey'),
+    (240, 255, 240, 'Honeydew'),
     (255, 105, 180, 'HotPink'),
     (205, 92, 92, 'IndianRed'),
-    (255, 255, 240, 'ivory'),
-    (240, 230, 140, 'khaki'),
-    (230, 230, 250, 'lavender'),
+    (255, 255, 240, 'Ivory'),
+    (240, 230, 140, 'Khaki'),
+    (230, 230, 250, 'Lavender'),
     (255, 240, 245, 'LavenderBlush'),
     (124, 252, 0, 'LawnGreen'),
     (255, 250, 205, 'LemonChiffon'),
@@ -129,9 +129,9 @@ RGB_NAMES = [
     (176, 196, 222, 'LightSteelBlue'),
     (255, 255, 224, 'LightYellow'),
     (50, 205, 50, 'LimeGreen'),
-    (250, 240, 230, 'linen'),
-    (255, 0, 255, 'magenta'),
-    (176, 48, 96, 'maroon'),
+    (250, 240, 230, 'Linen'),
+    (255, 0, 255, 'Magenta'),
+    (176, 48, 96, 'Maroon'),
     (102, 205, 170, 'MediumAquamarine'),
     (0, 0, 205, 'MediumBlue'),
     (186, 85, 211, 'MediumOrchid'),
@@ -144,52 +144,52 @@ RGB_NAMES = [
     (25, 25, 112, 'MidnightBlue'),
     (245, 255, 250, 'MintCream'),
     (255, 228, 225, 'MistyRose'),
-    (255, 228, 181, 'moccasin'),
+    (255, 228, 181, 'Moccasin'),
     (255, 222, 173, 'NavajoWhite'),
-    (0, 0, 128, 'navy'),
+    (0, 0, 128, 'Navy'),
     (0, 0, 128, 'NavyBlue'),
     (253, 245, 230, 'OldLace'),
     (107, 142, 35, 'OliveDrab'),
-    (255, 165, 0, 'orange'),
+    (255, 165, 0, 'Orange'),
     (255, 69, 0, 'OrangeRed'),
-    (218, 112, 214, 'orchid'),
+    (218, 112, 214, 'Orchid'),
     (238, 232, 170, 'PaleGoldenrod'),
     (152, 251, 152, 'PaleGreen'),
     (175, 238, 238, 'PaleTurquoise'),
     (219, 112, 147, 'PaleVioletRed'),
     (255, 239, 213, 'PapayaWhip'),
     (255, 218, 185, 'PeachPuff'),
-    (205, 133, 63, 'peru'),
-    (255, 192, 203, 'pink'),
-    (221, 160, 221, 'plum'),
+    (205, 133, 63, 'Peru'),
+    (255, 192, 203, 'Pink'),
+    (221, 160, 221, 'Plum'),
     (176, 224, 230, 'PowderBlue'),
-    (160, 32, 240, 'purple'),
-    (255, 0, 0, 'red'),
+    (160, 32, 240, 'Purple'),
+    (255, 0, 0, 'Red'),
     (188, 143, 143, 'RosyBrown'),
     (65, 105, 225, 'RoyalBlue'),
     (139, 69, 19, 'SaddleBrown'),
-    (250, 128, 114, 'salmon'),
+    (250, 128, 114, 'Salmon'),
     (244, 164, 96, 'SandyBrown'),
     (46, 139, 87, 'SeaGreen'),
-    (255, 245, 238, 'seashell'),
-    (160, 82, 45, 'sienna'),
+    (255, 245, 238, 'Seashell'),
+    (160, 82, 45, 'Sienna'),
     (135, 206, 235, 'SkyBlue'),
     (106, 90, 205, 'SlateBlue'),
     (112, 128, 144, 'SlateGray'),
     (112, 128, 144, 'SlateGrey'),
-    (255, 250, 250, 'snow'),
+    (255, 250, 250, 'Snow'),
     (0, 255, 127, 'SpringGreen'),
     (70, 130, 180, 'SteelBlue'),
-    (210, 180, 140, 'tan'),
-    (216, 191, 216, 'thistle'),
-    (255, 99, 71, 'tomato'),
-    (64, 224, 208, 'turquoise'),
-    (238, 130, 238, 'violet'),
+    (210, 180, 140, 'Tan'),
+    (216, 191, 216, 'Thistle'),
+    (255, 99, 71, 'Tomato'),
+    (64, 224, 208, 'Turquoise'),
+    (238, 130, 238, 'Violet'),
     (208, 32, 144, 'VioletRed'),
-    (245, 222, 179, 'wheat'),
-    (255, 255, 255, 'white'),
+    (245, 222, 179, 'Wheat'),
+    (255, 255, 255, 'White'),
     (245, 245, 245, 'WhiteSmoke'),
-    (255, 255, 0, 'yellow'),
+    (255, 255, 0, 'Yellow'),
     (154, 205, 50, 'YellowGreen'),
 ]
 
@@ -589,7 +589,8 @@ def hex2web(hex):
     ## have to look up the rgb.txt file.
     for line in RGB_NAMES:
         if line[:3] == dec_rgb:
-            return line[3]
+            return line[3] if len(re.sub(r"[^A-Z]", "", line[3])) > 1 \
+                   else line[3].lower()
 
     # Hex format is verified by hex2rgb function. And should be 3 or 6 digit
     if len(hex) == 7:
@@ -641,6 +642,11 @@ def web2hex(web, force_long=False):
     ...
     ValueError: 'pinky' is not a recognized color.
 
+    And color names are case insensitive:
+
+    >>> Color('RED')
+    <Color red>
+
     """
     if web.startswith('#'):
         if (LONG_HEX_COLOR.match(web) or
@@ -651,11 +657,12 @@ def web2hex(web, force_long=False):
         raise AttributeError(
             "%r is not in web format. Need 3 or 6 hex digit." % web)
 
+    web = web.lower()
     ## XXXvlab: would need a real hash structure now that we don't
     ## have to look up the rgb.txt file.
     r, g, b = [None] * 3
     for line in RGB_NAMES:
-        if line[3] == web:
+        if line[3].lower() == web:
             r, g, b = line[:3]
             break
 

@@ -168,7 +168,7 @@ Color comparison
 ----------------
 
 Sane default
-''''''''''''
+~~~~~~~~~~~~
 
 Color comparison is a vast subject. However, it might seem quite straitforward for
 you. ``Colour`` uses a configurable default way of comparing color that might suit
@@ -196,7 +196,7 @@ black blue, which both are black::
 
 
 Customization
-'''''''''''''
+~~~~~~~~~~~~~
 
 But, this is not the sole way to compare two colors. As I'm quite lazy, I'm providing
 you a way to customize it to your needs. Thus::
@@ -247,7 +247,7 @@ Picking arbitrary color for a python object
 -------------------------------------------
 
 Basic Usage
-'''''''''''
+~~~~~~~~~~~
 
 Sometimes, you just want to pick a color for an object in your application
 often to visually identify this object. Thus, the picked color should be the
@@ -267,7 +267,7 @@ Of course, although there's a tiny probability that different strings yield the
 same color, most of the time, different inputs will produce different colors.
 
 Advanced Usage
-''''''''''''''
+~~~~~~~~~~~~~~
 
 You can customize your color picking algorithm by providing a ``picker``. A
 ``picker`` is a callable that takes an object, and returns something that can

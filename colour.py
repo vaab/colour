@@ -926,6 +926,20 @@ class Color(object):
         >>> Color('red', equality=saturation_equality) == Color('blue')
         True
 
+
+    Subclassing support
+    -------------------
+
+    You should be able to subclass ``Color`` object without any issues::
+
+        >>> class Tint(Color):
+        ...     pass
+
+    And keep the internal API working::
+
+        >>> Tint("red").hsl
+        (0.0, 1.0, 0.5)
+
     """
 
     _hsl = None   ## internal representation
@@ -951,9 +965,12 @@ class Color(object):
             setattr(self, k, v)
 
     def __getattr__(self, label):
-        if ('get_' + label) in self.__class__.__dict__:
+        if label.startswith("get_"):
+            raise AttributeError("'%s' not found" % label)
+        try:
             return getattr(self, 'get_' + label)()
-        raise AttributeError("'%s' not found" % label)
+        except AttributeError:
+            raise AttributeError("'%s' not found" % label)
 
     def __setattr__(self, label, value):
         if label not in ["_hsl", "equality"]:

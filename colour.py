@@ -201,13 +201,16 @@ LONG_HEX_COLOR = re.compile(r'^#[0-9a-fA-F]{6}$')
 SHORT_HEX_COLOR = re.compile(r'^#[0-9a-fA-F]{3}$')
 
 
-class HSL:
-    BLACK = (0.0  , 0.0, 0.0)
-    WHITE = (0.0  , 0.0, 1.0)
-    RED   = (0.0  , 1.0, 0.5)
-    GREEN = (1.0/3, 1.0, 0.5)
-    BLUE  = (2.0/3, 1.0, 0.5)
-    GRAY  = (0.0  , 0.0, 0.5)
+class C_HSL:
+
+    def __getattr__(self, value):
+        label = value.lower()
+        if label in COLOR_NAME_TO_RGB:
+            return rgb2hsl(tuple(v / 255. for v in COLOR_NAME_TO_RGB[label]))
+        raise AttributeError("%s instance has no attribute %r" % (self.__class__, value))
+
+
+HSL = C_HSL()
 
 
 class C_RGB:

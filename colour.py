@@ -671,6 +671,16 @@ def web2hex(web, force_long=False):
     return rgb2hex([float(int(v)) / 255 for v in COLOR_NAME_TO_RGB[web]], force_long)
 
 
+## Missing functions convertion
+
+hsl2hex = lambda x: rgb2hex(hsl2rgb(x))
+hex2hsl = lambda x: rgb2hsl(hex2rgb(x))
+rgb2web = lambda x: hex2web(rgb2hex(x))
+web2rgb = lambda x: hex2rgb(web2hex(x))
+web2hsl = lambda x: rgb2hsl(web2rgb(x))
+hsl2web = lambda x: rgb2web(hsl2rgb(x))
+
+
 def color_scale(begin_hsl, end_hsl, nb):
     """Returns a list of nb color HSL tuples between begin_hsl and end_hsl
 

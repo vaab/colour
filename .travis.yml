@@ -3,5 +3,14 @@ python:
   - "3.3"
   - "2.7"
   - "2.6"
-install: ./autogen.sh
-script: python -m doctest -d colour.py -d README.rst
+install:
+  - python setup.py install && python setup.py develop easy_install "$(./autogen.sh --get-name)[test]"
+  - pip install coverage coveralls
+script:
+  - pip install git+file://$PWD
+  - git reset --hard HEAD ; git clean -d -f ; python setup.py sdist --formats=gztar && pip install "dist/$(./autogen.sh --get-name)-$(./autogen.sh --get-version | tr "_" "-").tar.gz" --upgrade
+  - python -c 'import colour'
+  - pip uninstall -y "$(./autogen.sh --get-name)"
+  - nosetests .
+after_success:
+  - coveralls

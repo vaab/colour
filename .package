@@ -1,0 +1,5 @@
+NAME="colour"
+DESCRIPTION="converts and manipulates various color representation (HSL, RVB, web, X11, ...)"
+EMAIL="valentin.lab@kalysto.org"
+AUTHOR="Valentin LAB"
+AUTHOR_EMAIL="$AUTHOR <$EMAIL>"

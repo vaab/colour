@@ -2,11 +2,22 @@
 Colour
 ======
 
-.. image:: https://pypip.in/v/colour/badge.png
-    :target: https://pypi.python.org/pypi/colour
+.. image:: http://img.shields.io/pypi/v/colour.svg?style=flat
+   :target: https://pypi.python.org/pypi/colour/
+   :alt: Latest PyPI version
 
-.. image:: https://secure.travis-ci.org/vaab/colour.png?branch=master
-    :target: http://travis-ci.org/vaab/colour
+.. image:: http://img.shields.io/pypi/dm/colour.svg?style=flat
+   :target: https://pypi.python.org/pypi/colour/
+   :alt: Number of PyPI downloads
+
+.. image:: http://img.shields.io/travis/vaab/colour/master.svg?style=flat
+   :target: https://travis-ci.org/vaab/colour/
+   :alt: Travis CI build status
+
+.. image:: http://img.shields.io/coveralls/vaab/colour/master.svg?style=flat
+   :target: https://coveralls.io/r/vaab/colour
+   :alt: Test coverage
+
 
 Converts and manipulates common color representation (RGB, HSV, web, ...)
 
@@ -42,6 +53,21 @@ You don't need to download the GIT version of the code as ``colour`` is
 available on the PyPI. So you should be able to run::
 
     pip install colour
+
+If you have downloaded the GIT sources, then you could add the ``colour.py``
+directly to one of your ``site-packages`` (thanks to a symlink). Or install
+the current version via traditional::
+
+    python setup.py install
+
+And if you don't have the GIT sources but would like to get the latest
+master or branch from github, you could also::
+
+    pip install git+https://github.com/vaab/colour
+
+Or even select a specific revision (branch/tag/commit)::
+
+    pip install git+https://github.com/vaab/colour@master
 
 
 Usage

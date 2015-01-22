@@ -1,3 +1,2 @@
 include *.rst
-include rgb.txt
 include LICENSE

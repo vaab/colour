@@ -1,9 +1,12 @@
 from setuptools import setup, find_packages
 
-import sys, os.path
+import sys
+import os.path
+
 ## Ensure that ``./autogen.sh`` is run prior to using ``setup.py``
 if "%%short-version%%".startswith("%%"):
-    import os, subprocess
+    import os
+    import subprocess
     if not os.path.exists('./autogen.sh'):
         sys.stderr.write(
             "This source repository was not configured.\n"
@@ -13,11 +16,12 @@ if "%%short-version%%".startswith("%%"):
     if os.path.exists('.autogen.sh.output'):
         sys.stderr.write(
             "It seems that ``./autogen.sh`` couldn't do its job as expected.\n"
-            "Please try to launch ``./autogen.sh`` manualy, and send the results to "
-            "the\nmaintainer of this package.\n"
+            "Please try to launch ``./autogen.sh`` manualy, and send the "
+            "results to the\nmaintainer of this package.\n"
             "Package will not be installed !\n")
         sys.exit(1)
-    sys.stderr.write("Missing version information: running './autogen.sh'...\n")
+    sys.stderr.write(
+        "Missing version information: running './autogen.sh'...\n")
     os.system('./autogen.sh > .autogen.sh.output')
     cmdline = sys.argv[:]
     if cmdline[1] == "install":
@@ -34,8 +38,8 @@ description_files = [
     'TODO.rst',
 ]
 
-long_description = '\n\n'.join(open(f).read() 
-                               for f in description_files 
+long_description = '\n\n'.join(open(f).read()
+                               for f in description_files
                                if os.path.exists(f))
 
 setup(

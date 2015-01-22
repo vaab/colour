@@ -14,21 +14,22 @@ Converts and manipulates common color representation (RGB, HSV, web, ...)
 Feature
 =======
 
-  - Damn simple and pythonic way to manipulate color representation (see
-    examples below)
+- Damn simple and pythonic way to manipulate color representation (see
+  examples below)
 
-  - Full conversion between RGB, HSV, 6-digit hex, 3-digit hex, human color
+- Full conversion between RGB, HSV, 6-digit hex, 3-digit hex, human color
 
-  - One object (``Color``) or bunch of single purpose function (``rgb2hex``,
-    ``hsl2rgb`` ...)
+- One object (``Color``) or bunch of single purpose function (``rgb2hex``,
+  ``hsl2rgb`` ...)
 
-  - ``web`` format that use the smallest representation between 6-digit,
-    3-digit, fully spelled color, that is following `W3C color naming`_ for
-    CSS or HTML color specifications.
+- ``web`` format that use the smallest representation between
+  6-digit (ie: ``#fa3b2c``), 3-digit (ie: ``#fbb``), fully spelled
+  color (ie: ``white``), following `W3C color naming`_ for compatible
+  CSS or HTML color specifications.
 
-  - smooth intuitive color scale generation choosing N color gradients.
+- smooth intuitive color scale generation choosing N color gradients.
 
-  - can pick colors for you to identify objects of your application.
+- can pick colors for you to identify objects of your application.
 
 
 .. _W3C color naming: http://www.w3.org/TR/css3-color/#svg-color
@@ -55,7 +56,7 @@ Here is a reduced sample of a common usage scenario:
 Instantiation
 -------------
 
-Let's create blue color:
+Let's create blue color::
 
     >>> from colour import Color
     >>> c = Color("blue")
@@ -78,7 +79,7 @@ Please note that all these are equivalent examples to create the red color::
 Reading values
 --------------
 
-Several representation are accessible:
+Several representation are accessible::
 
     >>> c.hex
     '#00f'
@@ -88,7 +89,7 @@ Several representation are accessible:
     (0.0, 0.0, 1.0)
 
 And their different parts are also independantly accessible, as the different
-amount of red, blue, green, of the RGB format:
+amount of red, blue, green, of the RGB format::
 
     >>> c.red
     0.0
@@ -97,7 +98,7 @@ amount of red, blue, green, of the RGB format:
     >>> c.green
     0.0
 
-Or the hue, saturation and luminance of the HSL representation.
+Or the hue, saturation and luminance of the HSL representation::
 
     >>> c.hue  # doctest: +ELLIPSIS
     0.66...
@@ -110,13 +111,13 @@ Or the hue, saturation and luminance of the HSL representation.
 Modifying color objects
 -----------------------
 
-All these property are read/write, so let's add some red to this color:
+All these property are read/write, so let's add some red to this color::
 
     >>> c.red = 1
     >>> c
     <Color magenta>
 
-We might want to de-saturate this color:
+We might want to de-saturate this color::
 
     >>> c.saturation = 0.5
     >>> c
@@ -137,14 +138,14 @@ Ranges of colors
 ----------------
 
 You can get some color scale of variation between two ``Color`` objects quite
-easily. Here, is the color scale of the rainbow between red and blue:
+easily. Here, is the color scale of the rainbow between red and blue::
 
     >>> red = Color("red")
     >>> blue = Color("blue")
     >>> list(red.range_to(blue, 5))
     [<Color red>, <Color yellow>, <Color lime>, <Color cyan>, <Color blue>]
 
-Or the different amount of gray between black and white:
+Or the different amount of gray between black and white::
 
     >>> black = Color("black")
     >>> white = Color("white")
@@ -153,15 +154,16 @@ Or the different amount of gray between black and white:
 
 
 If you have to create graphical representation with color scale
-between red and green ('lime' color is full green):
+between red and green ('lime' color is full green)::
 
     >>> lime = Color("lime")
     >>> list(red.range_to(lime, 5))
     [<Color red>, <Color #ff7f00>, <Color yellow>, <Color chartreuse>, <Color lime>]
 
-Notice how naturally, the yellow is displayed in human format and in the middle
-of the scale. And that the quite unusual (but compatible) 'chartreuse' color
-specification has been used in place of the hexadecimal representation.
+Notice how naturally, the yellow is displayed in human format and in
+the middle of the scale. And that the quite unusual (but compatible)
+'chartreuse' color specification has been used in place of the
+hexadecimal representation.
 
 
 Color comparison
@@ -251,7 +253,7 @@ Basic Usage
 
 Sometimes, you just want to pick a color for an object in your application
 often to visually identify this object. Thus, the picked color should be the
-same for same objects, and different for different object.
+same for same objects, and different for different object::
 
     >>> foo = object()
     >>> bar = object()
@@ -271,7 +273,7 @@ Advanced Usage
 
 You can customize your color picking algorithm by providing a ``picker``. A
 ``picker`` is a callable that takes an object, and returns something that can
-be instanciated as a color by ``Color``.
+be instanciated as a color by ``Color``::
 
     >>> my_picker = lambda obj: "red" if isinstance(obj, int) else "blue"
     >>> Color(pick_for=3, picker=my_picker, pick_key=None)
@@ -285,7 +287,7 @@ that is provided and defaults as equivalent of ``hash`` method and if hash is
 not supported by your object, it'll default to the ``str`` of your object salted
 with the class name.
 
-Thus:
+Thus::
 
     >>> class MyObj(str): pass
     >>> my_obj_color = Color(pick_for=MyObj("foo"))
@@ -307,7 +309,7 @@ objects, for instance::
     >>> Color(pick_for=a, pick_key=id) == Color(pick_for=b, pick_key=id)
     False
 
-When chosing a pick key, you should closely consider if you want your color
+When choosing a pick key, you should closely consider if you want your color
 to be consistent between runs (this is NOT the case with the last exemple),
 or consistent with the content of your object if its a mutable object.
 

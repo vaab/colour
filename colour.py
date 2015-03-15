@@ -1075,7 +1075,9 @@ class Color(object):
         return "<Color %s>" % self.web
 
     def __eq__(self, other):
-        return self.equality(self, other)
+        if isinstance(other, Color):
+            return self.equality(self, other)
+        return NotImplemented
 
 
 RGB_equivalence = lambda c1, c2: c1.hex_l == c2.hex_l

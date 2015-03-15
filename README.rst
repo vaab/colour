@@ -271,6 +271,42 @@ But reverse operation is not equivalent !::
    False
 
 
+Equality to non-Colour objects
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+As a side note, whatever your custom equaltiy function is, it won't be
+used if you compare to anything else than a ``Colour`` instance::
+
+    >>> red = Color("red", equality=lambda c1, c2: True)
+    >>> blue = Color("blue", equality=lambda c1, c2: True)
+
+Note that these instance would compare as equal to any other color::
+
+    >>> red == blue
+    True
+
+But on an other non-Colour object::
+
+    >>> red == None
+    False
+
+Actually, ``Colour`` instances will, politely enough, leave
+the other side of the equality have a chance to decide of the output,
+(by executing it's own ``__eq__``), so::
+
+    >>> class OtherColorImplem(object):
+    ...     def __init__(self, color):
+    ...         self.color = color
+    ...     def __eq__(self, other):
+    ...         return self.color == other.web
+
+    >>> alien_red = OtherColorImplem("red")
+    >>> red == alien_red
+    True
+    >>> blue == alien_red
+    False
+
+
 Picking arbitrary color for a python object
 -------------------------------------------
 

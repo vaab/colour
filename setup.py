@@ -9,12 +9,7 @@
 ## you can also find here: https://gist.github.com/vaab/9118087/raw
 ##
 
-try:
-    from setuptools import setup
-except ImportError:
-    from distribute_setup import use_setuptools
-    use_setuptools()
-    from setuptools import setup
+from setuptools import setup
 
 ##
 ## Ensure that ``./autogen.sh`` is run prior to using ``setup.py``

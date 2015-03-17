@@ -952,6 +952,32 @@ class Color(object):
         >>> Tint("red").hsl
         (0.0, 1.0, 0.5)
 
+
+    Types
+    -----
+
+    HSL values are float whatever the input values were:
+
+        >>> red = Color('red', hue=1)
+        >>> red.hue
+        1.0
+
+        >>> red.hsl = (1, 1, 1)
+        >>> red.hsl
+        (1.0, 1.0, 1.0)
+
+    RGB values are also float::
+
+        >>> red.red = 1
+        >>> red.green = 0
+        >>> red.blue = 0
+        >>> red.rgb
+        (1.0, 0.0, 0.0)
+
+        >>> red.rgb = (1, 0, 0)
+        >>> red.rgb
+        (1.0, 0.0, 0.0)
+
     """
 
     _hsl = None   ## internal representation
@@ -1033,19 +1059,19 @@ class Color(object):
     ##
 
     def set_hsl(self, value):
-        self._hsl = list(value)
+        self._hsl = list(float(v) for v in value)
 
     def set_rgb(self, value):
         self.hsl = rgb2hsl(value)
 
     def set_hue(self, value):
-        self._hsl[0] = value
+        self._hsl[0] = float(value)
 
     def set_saturation(self, value):
-        self._hsl[1] = value
+        self._hsl[1] = float(value)
 
     def set_luminance(self, value):
-        self._hsl[2] = value
+        self._hsl[2] = float(value)
 
     def set_red(self, value):
         r, g, b = self.rgb

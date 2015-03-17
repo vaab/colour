@@ -924,6 +924,11 @@ class Color(object):
         >>> Color(Color(Color('red')))
         <Color red>
 
+    And it should not change the HSL value::
+
+        >>> Color(Color('red', hue=1)).hue
+        1.0
+
     Equality support
     ----------------
 
@@ -993,7 +998,7 @@ class Color(object):
             color = picker(pick_key(pick_for))
 
         if isinstance(color, Color):
-            self.web = color.web
+            self.hsl = color.hsl
         else:
             self.web = color if color else 'black'
 

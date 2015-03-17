@@ -191,6 +191,26 @@ the middle of the scale. And that the quite unusual (but compatible)
 'chartreuse' color specification has been used in place of the
 hexadecimal representation.
 
+For the full rainbow colors, you need to understand that we are parsing the
+HSL representation and that "hue" is a color wheel. If we ask the range between two 
+same colors on the different end of the "hue" color wheel, we'll get a full rainbow
+color scale::
+
+     >>> red = Color("red")
+     >>> red.hue
+     0.0
+
+Here's the same red, on the other side of the color wheel::
+
+     >>> red2 = Color("red", hue=1)
+     >>> red2.web
+     'red'
+
+Here's the color scale between them::
+
+     >>> list(red.range_to(red2, 7))
+     [<Color red>, <Color yellow>, <Color lime>, <Color cyan>, <Color blue>, <Color magenta>, <Color red>]
+
 
 Color comparison
 ----------------

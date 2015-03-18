@@ -201,19 +201,46 @@ LONG_HEX_COLOR = re.compile(r'^#[0-9a-fA-F]{6}$')
 SHORT_HEX_COLOR = re.compile(r'^#[0-9a-fA-F]{3}$')
 
 
-class C_HSL:
 
-    def __getattr__(self, value):
-        label = value.lower()
-        if label in COLOR_NAME_TO_RGB:
-            return rgb2hsl(tuple(v / 255. for v in COLOR_NAME_TO_RGB[label]))
-        raise AttributeError("%s instance has no attribute %r" % (self.__class__, value))
+ColorSpaces = {}
 
 
-HSL = C_HSL()
+class MetaColorSpace(type):
+
+    def __init__(self, name, bases, attrs):
+        super(MetaColorSpace, self).__init__(name, bases, attrs)
+        if name != 'ColorSpace':
+            ColorSpaces[name.lower()] = self
+
+    def __getattr__(self, label):
+        if not label.startswith("_") and hasattr(self, "label_to_value"):
+            try:
+                return self.label_to_value(label)
+            except ValueError:
+                raise AttributeError(
+                    "%s instance has no attribute %r"
+                    % (self.__name__, label))
+        raise AttributeError(label)
 
 
-class C_RGB:
+class ColorSpace(object):
+
+    __metaclass__ = MetaColorSpace
+
+
+class HSL(ColorSpace):
+
+    @staticmethod
+    def label_to_value(label):
+        normalized_label = label.lower()
+        if normalized_label in COLOR_NAME_TO_RGB:
+            return rgb2hsl(
+                tuple(v / 255. for v in COLOR_NAME_TO_RGB[normalized_label]))
+        raise ValueError("Invalid color %r." % label)
+
+
+
+class RGB(ColorSpace):
     """RGB colors container
 
     Provides a quick color access.
@@ -232,11 +259,14 @@ class C_RGB:
 
     """
 
-    def __getattr__(self, value):
-        return hsl2rgb(getattr(HSL, value))
+    @staticmethod
+    def label_to_value(label):
+        return hsl2rgb(getattr(HSL, label))
 
 
-class C_HEX:
+
+
+class HEX(ColorSpace):
     """RGB colors container
 
     Provides a quick color access.
@@ -255,11 +285,10 @@ class C_HEX:
 
     """
 
-    def __getattr__(self, value):
+    @staticmethod
+    def label_to_value(value):
         return rgb2hex(getattr(RGB, value))
 
-RGB = C_RGB()
-HEX = C_HEX()
 
 
 ##

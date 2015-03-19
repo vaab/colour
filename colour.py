@@ -951,9 +951,10 @@ class Color(object):
             setattr(self, k, v)
 
     def __getattr__(self, label):
-        if ('get_' + label) in self.__class__.__dict__:
+        try:
             return getattr(self, 'get_' + label)()
-        raise AttributeError("'%s' not found" % label)
+        except AttributeError:
+            raise AttributeError("'%s' not found" % label)
 
     def __setattr__(self, label, value):
         if label not in ["_hsl", "equality"]:

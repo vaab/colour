@@ -13,16 +13,29 @@ script:
   ## checking that we can actually install it
 
   - python setup.py install
-  - python setup.py develop easy_install "$(./autogen.sh --get-name)[test]"  ## getting deps
-  ## XXXvlab: disabling this because it deletes ``easy-install.pth`` and breaks further tests. ON TRAVIS ONLY.
-  #- python setup.py develop --uninstall  ## removing stuff that breaks the following checks
+  - name=$(./autogen.sh --get-name); (cd / ; python -c "import $name")
+  - pip uninstall -y "$(./autogen.sh --get-name)"
+  - name=$(./autogen.sh --get-name); (cd / ; ! python -c "import $name")
 
   ## checking pip installability
 
   - git fetch --unshallow ; pip install git+file://$PWD
-  - git reset --hard HEAD ; git clean -d -f ; python setup.py sdist --formats=gztar && pip install "dist/$(./autogen.sh --get-name)-$(./autogen.sh --get-version | tr "_" "-").tar.gz" --upgrade
-  - python -c "import $(./autogen.sh --get-name)"
+  - name=$(./autogen.sh --get-name); (cd / ; python -c "import $name")
   - pip uninstall -y "$(./autogen.sh --get-name)"
+  - name=$(./autogen.sh --get-name); (cd / ; ! python -c "import $name")
+
+  ## checking tar.gz
+
+  - git reset --hard HEAD ; git clean -d -f ; python setup.py sdist --formats=gztar && pip install "dist/$(./autogen.sh --get-name)-$(./autogen.sh --get-version | tr "_" "-").tar.gz" --upgrade
+  - name=$(./autogen.sh --get-name); (cd / ; python -c "import $name")
+  - pip uninstall -y "$(./autogen.sh --get-name)"
+  - name=$(./autogen.sh --get-name); (cd / ; ! python -c "import $name")
+
+  ## checking that we can take test deps (and take them)
+
+  - python setup.py develop easy_install "$(./autogen.sh --get-name)[test]"  ## getting deps
+  ## XXXvlab: disabling this because it deletes ``easy-install.pth`` and breaks further tests. ON TRAVIS ONLY.
+  #- python setup.py develop --uninstall  ## removing stuff that breaks the following checks
 
   ## real tests
 

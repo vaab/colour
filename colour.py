@@ -696,9 +696,21 @@ def color_scale(begin_hsl, end_hsl, nb):
     ...                         15)]  # doctest: +ELLIPSIS
     ['#000', '#111', '#222', ..., '#ccc', '#ddd', '#eee', '#fff']
 
+    Of course, asking for negative values is not supported:
+
+    >>> color_scale((0, 1, 0.5), (1, 1, 0.5), -2)
+    Traceback (most recent call last):
+    ...
+    ValueError: Unsupported negative number of colors (nb=-2).
+
     """
 
-    step = tuple([float(end_hsl[i] - begin_hsl[i]) / nb for i in range(0, 3)])
+    if nb < 0:
+        raise ValueError(
+            "Unsupported negative number of colors (nb=%r)." % nb)
+
+    step = tuple([float(end_hsl[i] - begin_hsl[i]) / nb for i in range(0, 3)]) \
+           if nb > 0 else (0, 0, 0)
 
     def mul(step, value):
         return tuple([v * value for v in step])

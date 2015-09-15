@@ -89,7 +89,7 @@ Let's create blue color::
     >>> c
     <Color blue>
 
-Please note that all these are equivalent examples to create the red color::
+Please note that all of these are equivalent examples to create the red color::
 
     Color("red")           ## human, web compatible representation
     Color(red=1)           ## default amount of blue and green is 0.0
@@ -105,7 +105,7 @@ Please note that all these are equivalent examples to create the red color::
 Reading values
 --------------
 
-Several representation are accessible::
+Several representations are accessible::
 
     >>> c.hex
     '#00f'
@@ -115,7 +115,7 @@ Several representation are accessible::
     (0.0, 0.0, 1.0)
 
 And their different parts are also independently accessible, as the different
-amount of red, blue, green, of the RGB format::
+amount of red, blue, green, in the RGB format::
 
     >>> c.red
     0.0
@@ -137,7 +137,7 @@ Or the hue, saturation and luminance of the HSL representation::
 Modifying color objects
 -----------------------
 
-All these property are read/write, so let's add some red to this color::
+All of these properties are read/write, so let's add some red to this color::
 
     >>> c.red = 1
     >>> c
@@ -205,7 +205,7 @@ your needs::
     >>> Color("red") == Color("#f00") == Color("blue", hue=0)
     True
 
-The default comparison algorithm focus only on the "web" representation which is
+The default comparison algorithm focuses only on the "web" representation which is
 equivalent to comparing the long hex representation (e.g. #FF0000) or to be more
 specific, it is equivalent to compare the amount of red, green, and blue composition
 of the RGB representation, each of these value being quantized to a 256 value scale.
@@ -280,7 +280,7 @@ used if you compare to anything else than a ``Colour`` instance::
     >>> red = Color("red", equality=lambda c1, c2: True)
     >>> blue = Color("blue", equality=lambda c1, c2: True)
 
-Note that these instance would compare as equal to any other color::
+Note that these instances would compare as equal to any other color::
 
     >>> red == blue
     True

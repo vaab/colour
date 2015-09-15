@@ -34,8 +34,8 @@ Feature
   ``hsl2rgb`` ...)
 
 - ``web`` format that use the smallest representation between
-  6-digit (ie: ``#fa3b2c``), 3-digit (ie: ``#fbb``), fully spelled
-  color (ie: ``white``), following `W3C color naming`_ for compatible
+  6-digit (e.g. ``#fa3b2c``), 3-digit (e.g. ``#fbb``), fully spelled
+  color (e.g. ``white``), following `W3C color naming`_ for compatible
   CSS or HTML color specifications.
 
 - smooth intuitive color scale generation choosing N color gradients.
@@ -95,7 +95,7 @@ Please note that all these are equivalent examples to create the red color::
     Color(red=1)           ## default amount of blue and green is 0.0
     Color("blue", hue=0)   ## hue of blue is 0.66, hue of red is 0.0
     Color("#f00")          ## standard 3 hex digit web compatible representation
-    Color("#ff0000")       ## standrad 6 hex digit web compatible representation
+    Color("#ff0000")       ## standard 6 hex digit web compatible representation
     Color(hue=0, saturation=1, luminance=0.5)
     Color(hsl=(0, 1, 0.5)) ## full 3-uple HSL specification
     Color(rgb=(1, 0, 0))   ## full 3-uple RGB specification
@@ -114,7 +114,7 @@ Several representation are accessible::
     >>> c.rgb
     (0.0, 0.0, 1.0)
 
-And their different parts are also independantly accessible, as the different
+And their different parts are also independently accessible, as the different
 amount of red, blue, green, of the RGB format::
 
     >>> c.red
@@ -149,7 +149,7 @@ We might want to de-saturate this color::
     >>> c
     <Color #bf40bf>
 
-And of course, the string convertion will give the web representation which is
+And of course, the string conversion will give the web representation which is
 human, or 3-digit, or 6-digit hex representation depending which is usable::
 
     >>> "%s" % c
@@ -198,7 +198,7 @@ Color comparison
 Sane default
 ~~~~~~~~~~~~
 
-Color comparison is a vast subject. However, it might seem quite straitforward for
+Color comparison is a vast subject. However, it might seem quite straightforward for
 you. ``Colour`` uses a configurable default way of comparing color that might suit
 your needs::
 
@@ -206,8 +206,8 @@ your needs::
     True
 
 The default comparison algorithm focus only on the "web" representation which is
-equivalent to comparing the long hex representation (ie: #FF0000) or to be more
-specific, it is equivalent to compare the amount of red, green, and blue composant
+equivalent to comparing the long hex representation (e.g. #FF0000) or to be more
+specific, it is equivalent to compare the amount of red, green, and blue composition
 of the RGB representation, each of these value being quantized to a 256 value scale.
 
 This default comparison is a practical and convenient way to measure the actual
@@ -274,7 +274,7 @@ But reverse operation is not equivalent !::
 Equality to non-Colour objects
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-As a side note, whatever your custom equaltiy function is, it won't be
+As a side note, whatever your custom equality function is, it won't be
 used if you compare to anything else than a ``Colour`` instance::
 
     >>> red = Color("red", equality=lambda c1, c2: True)
@@ -285,14 +285,14 @@ Note that these instance would compare as equal to any other color::
     >>> red == blue
     True
 
-But on an other non-Colour object::
+But on another non-Colour object::
 
     >>> red == None
     False
 
 Actually, ``Colour`` instances will, politely enough, leave
 the other side of the equality have a chance to decide of the output,
-(by executing it's own ``__eq__``), so::
+(by executing its own ``__eq__``), so::
 
     >>> class OtherColorImplem(object):
     ...     def __init__(self, color):
@@ -335,7 +335,7 @@ Advanced Usage
 
 You can customize your color picking algorithm by providing a ``picker``. A
 ``picker`` is a callable that takes an object, and returns something that can
-be instanciated as a color by ``Color``::
+be instantiated as a color by ``Color``::
 
     >>> my_picker = lambda obj: "red" if isinstance(obj, int) else "blue"
     >>> Color(pick_for=3, picker=my_picker, pick_key=None)
@@ -359,7 +359,7 @@ Thus::
 
 Please make sure your object is hashable or "stringable" before using the
 ``RGB_color_picker`` picking mechanism or provide another color picker. Nearly
-all python object are hashable by default so this shouldn't be an issue (ie:
+all python object are hashable by default so this shouldn't be an issue (e.g. 
 instances of ``object`` and subclasses are hashable).
 
 Neither ``hash`` nor ``str`` are perfect solution. So feel free to use
@@ -372,8 +372,8 @@ objects, for instance::
     False
 
 When choosing a pick key, you should closely consider if you want your color
-to be consistent between runs (this is NOT the case with the last exemple),
-or consistent with the content of your object if its a mutable object.
+to be consistent between runs (this is NOT the case with the last example),
+or consistent with the content of your object if it is a mutable object.
 
 Default value of ``pick_key`` and ``picker`` ensures that the same color will
 be attributed to same object between different run on different computer for

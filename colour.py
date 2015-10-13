@@ -1136,6 +1136,31 @@ class Color(object):
         for hsl in color_scale(self._hsl, Color(value).hsl, steps - 1):
             yield Color(hsl=hsl)
 
+    def invert(self, label):
+        # If compound label, replace with list of simple labels
+        # If not, convert to list
+        # New color systems should be added here to avoid a ValueError
+        if label in ['rgb', 'hex']:
+            label = ['red', 'green', 'blue']
+        elif label in ['hsl']:
+            label = ['hue', 'saturation', 'luminance']
+        else:
+            label = [label]
+        
+        # For each label in list, check type then invert
+        # New attributes should be added here to avoid a ValueError
+        circular = ['hue']
+        linear = ['saturation', 'luminance', 'red', 'green', 'blue']
+        for a in label:
+            if a in circular:
+                value = (getattr(self, a) + 0.5) % 1
+            elif a in linear:
+                value = (1 - getattr(self, a))
+            else:
+                raise ValueError("Unknown how to invert attribute: %s"
+                                 % a)
+            setattr(self, a, value)
+
     ##
     ## Convenience
     ##

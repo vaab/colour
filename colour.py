@@ -1137,20 +1137,23 @@ class Color(object):
             yield Color(hsl=hsl)
 
     def invert(self, label):
+        compound = {'rgb': ['red', 'green', 'blue'],
+                    'hex': ['red', 'green', 'blue']
+                    'hsl': ['hue', 'saturation', 'luminance']
+                    }
+        circular = ['hue']
+        linear = ['saturation', 'luminance', 'red', 'green', 'blue']
+        
         # If compound label, replace with list of simple labels
         # If not, convert to list
-        # New color systems should be added here to avoid a ValueError
-        if label in ['rgb', 'hex']:
-            label = ['red', 'green', 'blue']
-        elif label in ['hsl']:
-            label = ['hue', 'saturation', 'luminance']
+        # New color systems should be added to compound dictionary to avoid a ValueError
+        if label in compound:
+            label = compound[label]
         else:
             label = [label]
         
-        # For each label in list, check type then invert
+        # For each label in list, check type (circular/linear) then invert
         # New attributes should be added here to avoid a ValueError
-        circular = ['hue']
-        linear = ['saturation', 'luminance', 'red', 'green', 'blue']
         for a in label:
             if a in circular:
                 value = (getattr(self, a) + 0.5) % 1

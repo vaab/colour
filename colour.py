@@ -1138,7 +1138,7 @@ class Color(object):
 
     def invert(self, label):
         compound = {'rgb': ['red', 'green', 'blue'],
-                    'hex': ['red', 'green', 'blue']
+                    'hex': ['red', 'green', 'blue'],
                     'hsl': ['hue', 'saturation', 'luminance']
                     }
         circular = ['hue']

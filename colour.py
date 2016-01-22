@@ -9,6 +9,9 @@ another.
 Formats
 -------
 
+HSV:
+    3-uple of Hue, Saturation, Value all between 0.0 and 1.0
+
 HSL:
     3-uple of Hue, Saturation, Lightness all between 0.0 and 1.0
 
@@ -465,6 +468,90 @@ def rgb2hsl(rgb):
     return (h, s, l)
 
 
+def hsv2rgb(hsv):
+    """Convert HSV representation towards RGB
+
+    :param h: Hue, position around the chromatic circle (h=1 equiv h=0)
+    :param s: Saturation, color saturation (0=full gray, 1=full color)
+    :param v: Value, brightness value(0=full black, 1=full brightness)
+    :rtype: 3-uple for RGB values in float between 0 and 1
+
+    Hue, Saturation, and Value are floats between 0 and 1
+
+    Note that Hue can be set to any value but as it is a rotation
+    around the chromatic circle, any value above 1 or below 0 can
+    be expressed by a value between 0 and 1 (Note that h=0 is equiv
+    to h=1).
+
+    This algorithm came from:
+    http://www.easyrgb.com/index.php?X=MATH&H=21#text21
+
+    Here are some examples of HSV to RGB convertion:
+
+    >>> from colour import hsv2rgb
+
+    TODO: finish examples
+
+    >>> hsv2rgb((1.0, 1.0, 1.0))  # doctest: +ELLIPSIS
+    (..., 0.0, 1.0)
+    >>> hsv2rgb((0.5, 0.5, 0.5))  # doctest: +ELLIPSIS
+    (..., 0.0, 0.5)
+    >>> hsv2rgb((0.0, 0.0, 0.0))  # doctest: +ELLIPSIS
+    (..., 0.0, 0.0)
+
+    If only one color is different from the others, it defines the
+    direct Hue:
+
+    >>> hsv2rgb((0.5, 0.5, 1.0))  # doctest: +ELLIPSIS
+    (0.66..., 1.0, 0.75)
+    >>> hsv2rgb((0.2, 0.1, 0.1))  # doctest: +ELLIPSIS
+    (0.0, 0.33..., 0.15...)
+
+    Having only one value set, you can check that:
+
+    >>> hsv2rgb((1.0, 0.0, 0.0))
+    (0.0, 1.0, 0.5)
+    >>> hsv2rgb((0.0, 1.0, 0.0))  # doctest: +ELLIPSIS
+    (0.33..., 1.0, 0.5)
+    >>> hsv2rgb((0.0, 0.0, 1.0))  # doctest: +ELLIPSIS
+    (0.66..., 1.0, 0.5)
+
+    Of course:
+    >>> hsv2rgb((0.0, 2.0, 0.5))  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    ValueError: Green must be between 0 and 1. You provided 2.0.
+
+    And:
+    >>> hsv2rgb((0.0, 0.0, 1.5))  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    ValueError: Blue must be between 0 and 1. You provided 1.5.
+
+    """
+    h, s, v = [float(v) for v in hsl]
+
+    #TODO: implement this
+    if not (0.0 - FLOAT_ERROR <= s <= 1.0 + FLOAT_ERROR):
+        raise ValueError("Saturation must be between 0 and 1.")
+    if not (0.0 - FLOAT_ERROR <= l <= 1.0 + FLOAT_ERROR):
+        raise ValueError("Lightness must be between 0 and 1.")
+
+    if s == 0:
+        return l, l, l
+
+    if l < 0.5:
+        v2 = l * (1.0 + s)
+    else:
+        v2 = (l + s) - (s * l)
+
+    v1 = 2.0 * l - v2
+
+    r = _hue2rgb(v1, v2, h + (1.0 / 3))
+    g = _hue2rgb(v1, v2, h)
+    b = _hue2rgb(v1, v2, h - (1.0 / 3))
+
+
 def _hue2rgb(v1, v2, vH):
     """Private helper function (Do not call directly)
 
@@ -788,7 +875,7 @@ class Color(object):
     """Abstraction of a color object
 
     Color object keeps information of a color. It can input/output to different
-    format (HSL, RGB, HEX, WEB) and their partial representation.
+    format (HSV, HSL, RGB, HEX, WEB) and their partial representation.
 
         >>> from colour import Color, HSL
 
@@ -814,6 +901,8 @@ class Color(object):
 
         >>> b.rgb
         (0.0, 0.0, 1.0)
+        >>> b.hsv  # doctest: +ELLIPSIS
+        (0.66..., 1.0, 1.0)
         >>> b.hsl  # doctest: +ELLIPSIS
         (0.66..., 1.0, 0.5)
         >>> b.hex
@@ -863,14 +952,20 @@ class Color(object):
         <Color red>
 
         >>> c.saturation = 0.0
-        >>> c.hsl  # doctest: +ELLIPSIS
+        >>> c.hsv  # doctest: +ELLIPSIS
         (..., 0.0, 0.5)
+        >>> c.hsl  # doctest: +ELLIPSIS
+        (..., 0.5, 0.0)
         >>> c.rgb
         (0.5, 0.5, 0.5)
         >>> c.hex
         '#7f7f7f'
         >>> c
         <Color #7f7f7f>
+
+        >>> c.value = 0.5
+        >>> c
+        <TODO: herp>
 
         >>> c.luminance = 0.0
         >>> c
@@ -904,10 +999,8 @@ class Color(object):
         ...
         AttributeError: 'lightness' not found
 
-    TODO: could add HSV, CMYK, YUV conversion.
+    TODO: could add CMYK, YUV conversion.
 
-#     >>> b.hsv
-#     >>> b.value
 #     >>> b.cyan
 #     >>> b.magenta
 #     >>> b.yellow
@@ -1031,6 +1124,9 @@ class Color(object):
     ##
     ## Set
     ##
+
+    def set_hsv(self, value):
+        self._hsl = hsv2hsl(value)
 
     def set_hsl(self, value):
         self._hsl = list(value)

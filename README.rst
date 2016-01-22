@@ -19,7 +19,7 @@ Colour
    :alt: Test coverage
 
 
-Converts and manipulates common color representation (RGB, HSV, web, ...)
+Converts and manipulates common color representation (RGB, HSL, web, ...)
 
 
 Feature
@@ -28,7 +28,7 @@ Feature
 - Damn simple and pythonic way to manipulate color representation (see
   examples below)
 
-- Full conversion between RGB, HSV, 6-digit hex, 3-digit hex, human color
+- Full conversion between RGB, HSL, 6-digit hex, 3-digit hex, human color
 
 - One object (``Color``) or bunch of single purpose function (``rgb2hex``,
   ``hsl2rgb`` ...)

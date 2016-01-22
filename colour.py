@@ -10,7 +10,7 @@ Formats
 -------
 
 HSL:
-    3-uple of Hue, Saturation, Value all between 0.0 and 1.0
+    3-uple of Hue, Saturation, Lightness all between 0.0 and 1.0
 
 RGB:
     3-uple of Red, Green, Blue all between 0.0 and 1.0

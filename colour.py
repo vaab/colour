@@ -79,6 +79,7 @@ RGB_TO_COLOR_NAMES = {
     (85, 107, 47): ['DarkOliveGreen'],
     (95, 158, 160): ['CadetBlue'],
     (100, 149, 237): ['CornflowerBlue'],
+    (102, 51, 153): ['RebeccaPurple'],
     (102, 205, 170): ['MediumAquamarine'],
     (105, 105, 105): ['DimGray', 'DimGrey'],
     (106, 90, 205): ['SlateBlue'],

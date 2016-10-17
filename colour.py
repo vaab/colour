@@ -268,7 +268,7 @@ class C_HSV:
     >>> HSV.WHITE
     (0.0, 0.0, 1.0)
     >>> HSV.BLUE  # doctest: +ELLIPSIS
-    (0.666..., 1.0, 1.0) # TODO: filli this in
+    (0.666..., 1.0, 1.0)
 
     >>> HSV.DONOTEXISTS  # doctest: +ELLIPSIS
     Traceback (most recent call last):
@@ -453,29 +453,29 @@ def rgb2hsv(rgb):
     should have a gray value (from black to white).
 
 
-    >>> rgb2hsv((1.0, 1.0, 1.0))  # doctest: +ELLIPSIS
-    (..., 0.0, 1.0) #TODO: fill in
-    >>> rgb2hsv((0.5, 0.5, 0.5))  # doctest: +ELLIPSIS
-    (..., 0.0, 0.5) #TODO: fill in
-    >>> rgb2hsv((0.0, 0.0, 0.0))  # doctest: +ELLIPSIS
-    (..., 0.0, 0.0) #TODO: fill in
+    >>> rgb2hsv((1.0, 1.0, 1.0))
+    (0, 0, 1.0)
+    >>> rgb2hsv((0.5, 0.5, 0.5))
+    (0, 0, 0.5)
+    >>> rgb2hsv((0.0, 0.0, 0.0))
+    (0, 0, 0.0)
 
     If only one color is different from the others, it defines the
     direct Hue:
 
     >>> rgb2hsv((0.5, 0.5, 1.0))  # doctest: +ELLIPSIS
-    (0.66..., 1.0, 0.75) #TODO: fill in
-    >>> rgb2hsv((0.2, 0.1, 0.1))  # doctest: +ELLIPSIS
-    (0.0, 0.33..., 0.15...) #TODO: fill in
+    (0.66..., 0.5, 1.0)
+    >>> rgb2hsv((0.2, 0.1, 0.1))
+    (0.0, 0.5, 0.2)
 
     Having only one value set, you can check that:
 
     >>> rgb2hsv((1.0, 0.0, 0.0))
-    (0.0, 1.0, 0.5) #TODO: fill in
+    (0.0, 1.0, 1.0)
     >>> rgb2hsv((0.0, 1.0, 0.0))  # doctest: +ELLIPSIS
-    (0.33..., 1.0, 0.5) #TODO: fill in
+    (0.33..., 1.0, 1.0)
     >>> rgb2hsv((0.0, 0.0, 1.0))  # doctest: +ELLIPSIS
-    (0.66..., 1.0, 0.5) #TODO: fill in
+    (0.66..., 1.0, 1.0)
 
     Bad input throws an exception:
     >>> rgb2hsv((0.0, 2.0, 0.5))  # doctest: +ELLIPSIS
@@ -521,7 +521,7 @@ def rgb2hsv(rgb):
         if h > 1:
             h -= 1
 
-    return h, s, l
+    return h, s, v
 
 
 def hex2rgb(str_rgb):
@@ -843,7 +843,8 @@ def hsv2rgb(hsv):
         return v, v, v
 
     _h = h*6
-    if (_h == 6) _h = 0  # H must be < 1
+    if _h == 6:
+        _h = 0  # H must be < 1
 
     _i = int(_h)  # Or ... var_i = floor( var_h )
     _1 = v * (1 - s)

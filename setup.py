@@ -15,7 +15,7 @@ from setuptools import setup
 ## Ensure that ``./autogen.sh`` is run prior to using ``setup.py``
 ##
 
-if "%%short-version%%".startswith("%%"):
+if "0.1.2".startswith("%%"):
     import os.path
     import sys
     if not os.path.exists('./autogen.sh'):

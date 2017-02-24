@@ -9,9 +9,6 @@ another.
 Formats
 -------
 
-HSL:
-    3-uple of Hue, Saturation, Lightness all between 0.0 and 1.0
-
 RGB:
     3-uple of Red, Green, Blue all between 0.0 and 1.0
 
@@ -21,6 +18,12 @@ HEX:
 
 WEB:
     string object that defaults to HEX representation or human if possible
+
+HSL:
+    3-uple of Hue, Saturation, Lightness all between 0.0 and 1.0
+
+HSV:
+    3-uple of Hue, Saturation, Value all between 0.0 and 1.0
 
 Usage
 -----
@@ -201,18 +204,6 @@ LONG_HEX_COLOR = re.compile(r'^#[0-9a-fA-F]{6}$')
 SHORT_HEX_COLOR = re.compile(r'^#[0-9a-fA-F]{3}$')
 
 
-class C_HSL:
-
-    def __getattr__(self, value):
-        label = value.lower()
-        if label in COLOR_NAME_TO_RGB:
-            return rgb2hsl(tuple(v / 255. for v in COLOR_NAME_TO_RGB[label]))
-        raise AttributeError("%s instance has no attribute %r" % (self.__class__, value))
-
-
-HSL = C_HSL()
-
-
 class C_RGB:
     """RGB colors container
 
@@ -258,110 +249,88 @@ class C_HEX:
     def __getattr__(self, value):
         return rgb2hex(getattr(RGB, value))
 
-RGB = C_RGB()
-HEX = C_HEX()
+
+class C_HSL:
+    def __getattr__(self, value):
+        label = value.lower()
+        if label in COLOR_NAME_TO_RGB:
+            return rgb2hsl(tuple(v / 255. for v in COLOR_NAME_TO_RGB[label]))
+        raise AttributeError("%s instance has no attribute %r" % (self.__class__, value))
 
 
-##
-## Convertion function
-##
+class C_HSV:
+    """HSV colors container
 
-def hsl2rgb(hsl):
-    """Convert HSL representation towards RGB
+    Provides a quick color access.
 
-    :param h: Hue, position around the chromatic circle (h=1 equiv h=0)
-    :param s: Saturation, color saturation (0=full gray, 1=full color)
-    :param l: Ligthness, Overhaul lightness (0=full black, 1=full white)
-    :rtype: 3-uple for RGB values in float between 0 and 1
+    >>> from colour import HSV
 
-    Hue, Saturation, Range from Lightness is a float between 0 and 1
-
-    Note that Hue can be set to any value but as it is a rotation
-    around the chromatic circle, any value above 1 or below 0 can
-    be expressed by a value between 0 and 1 (Note that h=0 is equiv
-    to h=1).
-
-    This algorithm came from:
-    http://www.easyrgb.com/index.php?X=MATH&H=19#text19
-
-    Here are some quick notion of HSL to RGB convertion:
-
-    >>> from colour import hsl2rgb
-
-    With a lightness put at 0, RGB is always rgbblack
-
-    >>> hsl2rgb((0.0, 0.0, 0.0))
-    (0.0, 0.0, 0.0)
-    >>> hsl2rgb((0.5, 0.0, 0.0))
-    (0.0, 0.0, 0.0)
-    >>> hsl2rgb((0.5, 0.5, 0.0))
-    (0.0, 0.0, 0.0)
-
-    Same for lightness put at 1, RGB is always rgbwhite
-
-    >>> hsl2rgb((0.0, 0.0, 1.0))
-    (1.0, 1.0, 1.0)
-    >>> hsl2rgb((0.5, 0.0, 1.0))
-    (1.0, 1.0, 1.0)
-    >>> hsl2rgb((0.5, 0.5, 1.0))
-    (1.0, 1.0, 1.0)
-
-    With saturation put at 0, the RGB should be equal to Lightness:
-
-    >>> hsl2rgb((0.0, 0.0, 0.25))
-    (0.25, 0.25, 0.25)
-    >>> hsl2rgb((0.5, 0.0, 0.5))
-    (0.5, 0.5, 0.5)
-    >>> hsl2rgb((0.5, 0.0, 0.75))
-    (0.75, 0.75, 0.75)
-
-    With saturation put at 1, and lightness put to 0.5, we can find
-    normal full red, green, blue colors:
-
-    >>> hsl2rgb((0 , 1.0, 0.5))
-    (1.0, 0.0, 0.0)
-    >>> hsl2rgb((1 , 1.0, 0.5))
-    (1.0, 0.0, 0.0)
-    >>> hsl2rgb((1.0/3 , 1.0, 0.5))
-    (0.0, 1.0, 0.0)
-    >>> hsl2rgb((2.0/3 , 1.0, 0.5))
+    >>> HSV.WHITE
     (0.0, 0.0, 1.0)
+    >>> HSV.BLUE  # doctest: +ELLIPSIS
+    (0.666..., 1.0, 1.0)
 
-    Of course:
-    >>> hsl2rgb((0.0, 2.0, 0.5))  # doctest: +ELLIPSIS
+    >>> HSV.DONOTEXISTS  # doctest: +ELLIPSIS
     Traceback (most recent call last):
     ...
-    ValueError: Saturation must be between 0 and 1.
-
-    And:
-    >>> hsl2rgb((0.0, 0.0, 1.5))  # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-    ...
-    ValueError: Lightness must be between 0 and 1.
+    AttributeError: ... has no attribute 'DONOTEXISTS'
 
     """
-    h, s, l = [float(v) for v in hsl]
 
-    if not (0.0 - FLOAT_ERROR <= s <= 1.0 + FLOAT_ERROR):
-        raise ValueError("Saturation must be between 0 and 1.")
-    if not (0.0 - FLOAT_ERROR <= l <= 1.0 + FLOAT_ERROR):
-        raise ValueError("Lightness must be between 0 and 1.")
+    def __getattr__(self, value):
+        label = value.lower()
+        if label in COLOR_NAME_TO_RGB:
+            return rgb2hsv(tuple(v / 255. for v in COLOR_NAME_TO_RGB[label]))
+        raise AttributeError("%s instance has no attribute %r" % (self.__class__, value))
 
-    if s == 0:
-        return l, l, l
 
-    if l < 0.5:
-        v2 = l * (1.0 + s)
-    else:
-        v2 = (l + s) - (s * l)
+RGB = C_RGB()
+HEX = C_HEX()
+HSL = C_HSL()
+HSV = C_HSV()
 
-    v1 = 2.0 * l - v2
 
-    r = _hue2rgb(v1, v2, h + (1.0 / 3))
-    g = _hue2rgb(v1, v2, h)
-    b = _hue2rgb(v1, v2, h - (1.0 / 3))
+##
+## Conversion functions
+##
+def rgb2hex(rgb, force_long=False):
+    """Transform RGB tuple to hex RGB representation
 
-    return r, g, b
+    :param rgb: RGB 3-uple of float between 0 and 1
+    :rtype: 3 hex char or 6 hex char string representation
+
+    Usage
+    -----
+
+    >>> from colour import rgb2hex
+
+    >>> rgb2hex((0.0,1.0,0.0))
+    '#0f0'
+
+    Rounding try to be as natural as possible:
+
+    >>> rgb2hex((0.0,0.999999,1.0))
+    '#0ff'
+
+    And if not possible, the 6 hex char representation is used:
+
+    >>> rgb2hex((0.23,1.0,1.0))
+    '#3bffff'
+
+    >>> rgb2hex((0.0,0.999999,1.0), force_long=True)
+    '#00ffff'
+
+    """
+
+    hx = '#' + ''.join(["%02x" % int(c*255 + 0.5 - FLOAT_ERROR) for c in rgb])
+
+    if force_long == False and \
+        hx[1] == hx[2] and \
+        hx[3] == hx[4] and \
+        hx[5] == hx[6]:
+        return '#' + hx[1] + hx[3] + hx[5]
+
+    return hx
 
 
 def rgb2hsl(rgb):
@@ -465,61 +434,94 @@ def rgb2hsl(rgb):
     return (h, s, l)
 
 
-def _hue2rgb(v1, v2, vH):
-    """Private helper function (Do not call directly)
+def rgb2hsv(rgb):
+    """Convert RGB representations to HSV
 
-    :param vH: rotation around the chromatic circle (between 0..1)
+    :param r: Red amount (float between 0 and 1)
+    :param g: Green amount (float between 0 and 1)
+    :param b: Blue amount (float between 0 and 1)
+    :rtype: 3-uple for HSV values in float between 0 and 1
+
+    This algorithm came from:
+    http://www.easyrgb.com/index.php?X=MATH&H=20#text20
+
+    Here are some quick notion of RGB to HSV convertion:
+
+    >>> from colour import rgb2hsv
+
+    Note that if red amount is equal to green and blue, then you
+    should have a gray value (from black to white).
+
+
+    >>> rgb2hsv((1.0, 1.0, 1.0))
+    (0, 0, 1.0)
+    >>> rgb2hsv((0.5, 0.5, 0.5))
+    (0, 0, 0.5)
+    >>> rgb2hsv((0.0, 0.0, 0.0))
+    (0, 0, 0.0)
+
+    If only one color is different from the others, it defines the
+    direct Hue:
+
+    >>> rgb2hsv((0.5, 0.5, 1.0))  # doctest: +ELLIPSIS
+    (0.66..., 0.5, 1.0)
+    >>> rgb2hsv((0.2, 0.1, 0.1))
+    (0.0, 0.5, 0.2)
+
+    Having only one value set, you can check that:
+
+    >>> rgb2hsv((1.0, 0.0, 0.0))
+    (0.0, 1.0, 1.0)
+    >>> rgb2hsv((0.0, 1.0, 0.0))  # doctest: +ELLIPSIS
+    (0.33..., 1.0, 1.0)
+    >>> rgb2hsv((0.0, 0.0, 1.0))  # doctest: +ELLIPSIS
+    (0.66..., 1.0, 1.0)
+
+    Bad input throws an exception:
+    >>> rgb2hsv((0.0, 2.0, 0.5))  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    ValueError: Green must be between 0 and 1. You provided 2.0.
+    >>> rgb2hsv((0.0, 0.0, 1.5))  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    ValueError: Blue must be between 0 and 1. You provided 1.5.
 
     """
+    r, g, b = [float(v) for v in rgb]
 
-    while vH < 0: vH += 1
-    while vH > 1: vH -= 1
+    for name, v in {'Red': r, 'Green': g, 'Blue': b}.items():
+        if not (0 - FLOAT_ERROR <= v <= 1 + FLOAT_ERROR):
+            raise ValueError("%s must be between 0 and 1. You provided %r."
+                             % (name, v))
 
-    if 6 * vH < 1: return v1 + (v2 - v1) * 6 * vH
-    if 2 * vH < 1: return v2
-    if 3 * vH < 2: return v1 + (v2 - v1) * ((2.0 / 3) - vH) * 6
+    _min = min(r, g, b)
+    _max = max(r, g, b)
+    _delta = _max - _min
 
-    return v1
+    v = _max
 
+    if _delta == 0:  # This is a gray (no chroma)
+        h, s = 0, 0
+    else:
+        s = _delta/_max
+        _dr = (((_max - r) / 6) + (_max / 2)) / _max
+        _dg = (((_max - g) / 6) + (_max / 2)) / _max
+        _db = (((_max - b) / 6) + (_max / 2)) / _max
 
-def rgb2hex(rgb, force_long=False):
-    """Transform RGB tuple to hex RGB representation
+        if r == _max:
+            h = _db - _dg
+        elif g == _max:
+            h = (1 / 3) + r - b
+        elif b == _max:
+            h = (2 / 3) + g - r
 
-    :param rgb: RGB 3-uple of float between 0 and 1
-    :rtype: 3 hex char or 6 hex char string representation
+        if h < 0:
+            h += 1
+        if h > 1:
+            h -= 1
 
-    Usage
-    -----
-
-    >>> from colour import rgb2hex
-
-    >>> rgb2hex((0.0,1.0,0.0))
-    '#0f0'
-
-    Rounding try to be as natural as possible:
-
-    >>> rgb2hex((0.0,0.999999,1.0))
-    '#0ff'
-
-    And if not possible, the 6 hex char representation is used:
-
-    >>> rgb2hex((0.23,1.0,1.0))
-    '#3bffff'
-
-    >>> rgb2hex((0.0,0.999999,1.0), force_long=True)
-    '#00ffff'
-
-    """
-
-    hx = '#' + ''.join(["%02x" % int(c*255 + 0.5 - FLOAT_ERROR) for c in rgb])
-
-    if force_long == False and \
-        hx[1] == hx[2] and \
-        hx[3] == hx[4] and \
-        hx[5] == hx[6]:
-        return '#' + hx[1] + hx[3] + hx[5]
-
-    return hx
+    return h, s, v
 
 
 def hex2rgb(str_rgb):
@@ -671,14 +673,229 @@ def web2hex(web, force_long=False):
     return rgb2hex([float(int(v)) / 255 for v in COLOR_NAME_TO_RGB[web]], force_long)
 
 
-## Missing functions convertion
+def hsl2rgb(hsl):
+    """Convert HSL representation towards RGB
 
-hsl2hex = lambda x: rgb2hex(hsl2rgb(x))
-hex2hsl = lambda x: rgb2hsl(hex2rgb(x))
+    :param h: Hue, position around the chromatic circle (h=1 equiv h=0)
+    :param s: Saturation, color saturation (0=full gray, 1=full color)
+    :param l: Ligthness, Overhaul lightness (0=full black, 1=full white)
+    :rtype: 3-uple for RGB values in float between 0 and 1
+
+    Hue, Saturation, Range from Lightness is a float between 0 and 1
+
+    Note that Hue can be set to any value but as it is a rotation
+    around the chromatic circle, any value above 1 or below 0 can
+    be expressed by a value between 0 and 1 (Note that h=0 is equiv
+    to h=1).
+
+    This algorithm came from:
+    http://www.easyrgb.com/index.php?X=MATH&H=19#text19
+
+    Here are some quick notion of HSL to RGB convertion:
+
+    >>> from colour import hsl2rgb
+
+    With a lightness put at 0, RGB is always rgbblack
+
+    >>> hsl2rgb((0.0, 0.0, 0.0))
+    (0.0, 0.0, 0.0)
+    >>> hsl2rgb((0.5, 0.0, 0.0))
+    (0.0, 0.0, 0.0)
+    >>> hsl2rgb((0.5, 0.5, 0.0))
+    (0.0, 0.0, 0.0)
+
+    Same for lightness put at 1, RGB is always rgbwhite
+
+    >>> hsl2rgb((0.0, 0.0, 1.0))
+    (1.0, 1.0, 1.0)
+    >>> hsl2rgb((0.5, 0.0, 1.0))
+    (1.0, 1.0, 1.0)
+    >>> hsl2rgb((0.5, 0.5, 1.0))
+    (1.0, 1.0, 1.0)
+
+    With saturation put at 0, the RGB should be equal to Lightness:
+
+    >>> hsl2rgb((0.0, 0.0, 0.25))
+    (0.25, 0.25, 0.25)
+    >>> hsl2rgb((0.5, 0.0, 0.5))
+    (0.5, 0.5, 0.5)
+    >>> hsl2rgb((0.5, 0.0, 0.75))
+    (0.75, 0.75, 0.75)
+
+    With saturation put at 1, and lightness put to 0.5, we can find
+    normal full red, green, blue colors:
+
+    >>> hsl2rgb((0 , 1.0, 0.5))
+    (1.0, 0.0, 0.0)
+    >>> hsl2rgb((1 , 1.0, 0.5))
+    (1.0, 0.0, 0.0)
+    >>> hsl2rgb((1.0/3 , 1.0, 0.5))
+    (0.0, 1.0, 0.0)
+    >>> hsl2rgb((2.0/3 , 1.0, 0.5))
+    (0.0, 0.0, 1.0)
+
+    Of course:
+    >>> hsl2rgb((0.0, 2.0, 0.5))  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    ValueError: Saturation must be between 0 and 1.
+
+    And:
+    >>> hsl2rgb((0.0, 0.0, 1.5))  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    ValueError: Lightness must be between 0 and 1.
+
+    """
+    h, s, l = [float(v) for v in hsl]
+
+    if not (0.0 - FLOAT_ERROR <= s <= 1.0 + FLOAT_ERROR):
+        raise ValueError("Saturation must be between 0 and 1.")
+    if not (0.0 - FLOAT_ERROR <= l <= 1.0 + FLOAT_ERROR):
+        raise ValueError("Lightness must be between 0 and 1.")
+
+    if s == 0:
+        return l, l, l
+
+    if l < 0.5:
+        v2 = l * (1.0 + s)
+    else:
+        v2 = (l + s) - (s * l)
+
+    v1 = 2.0 * l - v2
+
+    r = _hue2rgb(v1, v2, h + (1.0 / 3))
+    g = _hue2rgb(v1, v2, h)
+    b = _hue2rgb(v1, v2, h - (1.0 / 3))
+
+    return r, g, b
+
+
+def hsv2rgb(hsv):
+    """Convert HSV representation towards RGB
+
+    :param h: Hue, position around the chromatic circle (h=1 equiv h=0)
+    :param s: Saturation, color saturation (0=full gray, 1=full color)
+    :param v: Value, brightness value(0=full black, 1=full brightness)
+    :rtype: 3-uple for RGB values in float between 0 and 1
+
+    Hue, Saturation, and Value are floats between 0 and 1
+
+    Note that Hue can be set to any value but as it is a rotation
+    around the chromatic circle, any value above 1 or below 0 can
+    be expressed by a value between 0 and 1 (Note that h=0 is equiv
+    to h=1).
+
+    This algorithm came from:
+    http://www.easyrgb.com/index.php?X=MATH&H=21#text21
+
+    Here are some examples of HSV to RGB convertion:
+
+    >>> from colour import hsv2rgb
+
+    TODO: finish examples
+
+    >>> hsv2rgb((1.0, 1.0, 1.0))  # doctest: +ELLIPSIS
+    (..., 0.0, 1.0)
+    >>> hsv2rgb((0.5, 0.5, 0.5))  # doctest: +ELLIPSIS
+    (..., 0.0, 0.5)
+    >>> hsv2rgb((0.0, 0.0, 0.0))  # doctest: +ELLIPSIS
+    (..., 0.0, 0.0)
+
+    If only one color is different from the others, it defines the
+    direct Hue:
+
+    >>> hsv2rgb((0.5, 0.5, 1.0))  # doctest: +ELLIPSIS
+    (0.66..., 1.0, 0.75)
+    >>> hsv2rgb((0.2, 0.1, 0.1))  # doctest: +ELLIPSIS
+    (0.0, 0.33..., 0.15...)
+
+    Having only one value set, you can check that:
+
+    >>> hsv2rgb((1.0, 0.0, 0.0))
+    (0.0, 1.0, 0.5)
+    >>> hsv2rgb((0.0, 1.0, 0.0))  # doctest: +ELLIPSIS
+    (0.33..., 1.0, 0.5)
+    >>> hsv2rgb((0.0, 0.0, 1.0))  # doctest: +ELLIPSIS
+    (0.66..., 1.0, 0.5)
+
+    Of course:
+    >>> hsv2rgb((0.0, 2.0, 0.5))  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    ValueError: Green must be between 0 and 1. You provided 2.0.
+
+    And:
+    >>> hsv2rgb((0.0, 0.0, 1.5))  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    ValueError: Blue must be between 0 and 1. You provided 1.5.
+
+    """
+    h, s, v = [float(v) for v in hsl]
+
+    if not (0.0 - FLOAT_ERROR <= s <= 1.0 + FLOAT_ERROR):
+        raise ValueError("Saturation must be between 0 and 1.")
+    if not (0.0 - FLOAT_ERROR <= v <= 1.0 + FLOAT_ERROR):
+        raise ValueError("Value must be between 0 and 1.")
+
+    if s == 0:  # HSV from 0 to 1
+        return v, v, v
+
+    _h = h*6
+    if _h == 6:
+        _h = 0  # H must be < 1
+
+    _i = int(_h)  # Or ... var_i = floor( var_h )
+    _1 = v * (1 - s)
+    _2 = v * (1 - s * (_h - _i))
+    _3 = v * (1 - s * (1 - (_h - _i)))
+
+    if _i == 0:
+        r, g, b = v, _3, _1
+    elif _i == 1:
+        r, g, b = _2, v, _1
+    elif _i == 2:
+        r, g, b = _1, v, _3
+    elif _i == 3:
+        r, g, b = _1, _2, v
+    elif _i == 4:
+        r, g, b = _3, _1, v
+    else:
+        r, g, b = v, _1, _2
+
+    return r, g, b
+
+
+def _hue2rgb(v1, v2, vH):
+    """Private helper function for hsl2rgb
+
+    :param vH: rotation around the chromatic circle (between 0..1)
+
+    """
+
+    while vH < 0: vH += 1
+    while vH > 1: vH -= 1
+
+    if 6 * vH < 1: return v1 + (v2 - v1) * 6 * vH
+    if 2 * vH < 1: return v2
+    if 3 * vH < 2: return v1 + (v2 - v1) * ((2.0 / 3) - vH) * 6
+
+    return v1
+
+
+## Missing functions convertion
 rgb2web = lambda x: hex2web(rgb2hex(x))
+hex2hsl = lambda x: rgb2hsl(hex2rgb(x))
+hex2hsv = lambda x: rgb2hsv(hex2rgb(x))
 web2rgb = lambda x: hex2rgb(web2hex(x))
 web2hsl = lambda x: rgb2hsl(web2rgb(x))
+web2hsv = lambda x: rgb2hsv(web2rgb(x))
+hsl2hex = lambda x: rgb2hex(hsl2rgb(x))
 hsl2web = lambda x: rgb2web(hsl2rgb(x))
+hsl2hsv = lambda x: rgb2hsv(hsl2rgb(x))
+hsv2hex = lambda x: rgb2hex(hsv2rgb(x))
+hsv2hsl = lambda x: rgb2hsl(hsv2rgb(x))
 
 
 def color_scale(begin_hsl, end_hsl, nb):
@@ -788,7 +1005,7 @@ class Color(object):
     """Abstraction of a color object
 
     Color object keeps information of a color. It can input/output to different
-    format (HSL, RGB, HEX, WEB) and their partial representation.
+    format (HSV, HSL, RGB, HEX, WEB) and their partial representation.
 
         >>> from colour import Color, HSL
 
@@ -814,6 +1031,8 @@ class Color(object):
 
         >>> b.rgb
         (0.0, 0.0, 1.0)
+        >>> b.hsv  # doctest: +ELLIPSIS
+        (0.66..., 1.0, 1.0)
         >>> b.hsl  # doctest: +ELLIPSIS
         (0.66..., 1.0, 0.5)
         >>> b.hex
@@ -863,14 +1082,20 @@ class Color(object):
         <Color red>
 
         >>> c.saturation = 0.0
-        >>> c.hsl  # doctest: +ELLIPSIS
+        >>> c.hsv  # doctest: +ELLIPSIS
         (..., 0.0, 0.5)
+        >>> c.hsl  # doctest: +ELLIPSIS
+        (..., 0.5, 0.0)
         >>> c.rgb
         (0.5, 0.5, 0.5)
         >>> c.hex
         '#7f7f7f'
         >>> c
         <Color #7f7f7f>
+
+        >>> c.value = 0.5
+        >>> c
+        <TODO: herp>
 
         >>> c.luminance = 0.0
         >>> c
@@ -904,10 +1129,8 @@ class Color(object):
         ...
         AttributeError: 'lightness' not found
 
-    TODO: could add HSV, CMYK, YUV conversion.
+    TODO: could add CMYK, YUV conversion.
 
-#     >>> b.hsv
-#     >>> b.value
 #     >>> b.cyan
 #     >>> b.magenta
 #     >>> b.yellow
@@ -1031,6 +1254,9 @@ class Color(object):
     ##
     ## Set
     ##
+
+    def set_hsv(self, value):
+        self._hsl = hsv2hsl(value)
 
     def set_hsl(self, value):
         self._hsl = list(value)

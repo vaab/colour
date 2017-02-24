@@ -133,6 +133,13 @@ Or the hue, saturation and luminance of the HSL representation::
     >>> c.luminance
     0.5
 
+A note on the ``.hex`` property, it'll return the smallest valid value
+when possible. If you are only interested by the long value, use
+``.hex_l``::
+
+    >>> c.hex_l
+    '#0000ff'
+
 
 Modifying color objects
 -----------------------

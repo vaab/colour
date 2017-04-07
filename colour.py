@@ -927,9 +927,24 @@ class Color(object):
     Equality support
     ----------------
 
+    Color objects can be compared for equality.
+
+        >>> Color('white')._is_comparable(Color('yellow'))
+        True
+        >>> Color('white')._is_comparable('yellow')
+        False
+        >>> Color('white')._is_comparable(255)
+        False
+
     Default equality is RGB hex comparison:
 
         >>> Color('red') == Color('blue')
+        False
+        >>> Color('red') == Color('red')
+        True
+        >>> Color('red') != Color('blue')
+        True
+        >>> Color('red') != Color('red')
         False
 
     But this can be changed:
@@ -1086,11 +1101,22 @@ class Color(object):
     def __repr__(self):
         return "<Color %s>" % self.web
 
+    ##
+    ## Comparisons
+    ##
+
+    def _is_comparable(self, other):
+        return isinstance(other, Color)
+
     def __eq__(self, other):
-        if isinstance(other, Color):
+        if self._is_comparable(other):
             return self.equality(self, other)
         return NotImplemented
 
+    def __ne__(self, other):
+        if self._is_comparable(other):
+            return not self.equality(self, other)
+        return NotImplemented
 
 RGB_equivalence = lambda c1, c2: c1.hex_l == c2.hex_l
 HSL_equivalence = lambda c1, c2: c1._hsl == c2._hsl

@@ -22,6 +22,10 @@ Colour
    :target: https://travis-ci.org/vaab/colour/
    :alt: Travis CI build status
 
+.. image:: https://img.shields.io/appveyor/ci/vaab/colour.svg
+   :target: https://ci.appveyor.com/project/vaab/colour/branch/master
+   :alt: Appveyor CI build status
+
 .. image:: http://img.shields.io/codecov/c/github/vaab/colour.svg?style=flat
    :target: https://codecov.io/gh/vaab/colour/
    :alt: Test coverage

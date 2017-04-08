@@ -209,7 +209,8 @@ class C_HSL:
         label = value.lower()
         if label in COLOR_NAME_TO_RGB:
             return rgb2hsl(tuple(v / 255. for v in COLOR_NAME_TO_RGB[label]))
-        raise AttributeError("%s instance has no attribute %r" % (self.__class__, value))
+        raise AttributeError("%s instance has no attribute %r"
+                             % (self.__class__, value))
 
 
 HSL = C_HSL()
@@ -513,15 +514,13 @@ def rgb2hex(rgb, force_long=False):
 
     """
 
-    hx = '#' + ''.join(["%02x" % int(c*255 + 0.5 - FLOAT_ERROR) for c in rgb])
+    hx = ''.join(["%02x" % int(c * 255 + 0.5 - FLOAT_ERROR)
+                  for c in rgb])
 
-    if force_long == False and \
-        hx[1] == hx[2] and \
-        hx[3] == hx[4] and \
-        hx[5] == hx[6]:
-        return '#' + hx[1] + hx[3] + hx[5]
+    if not force_long and hx[0::2] == hx[1::2]:
+        hx = ''.join(hx[0::2])
 
-    return hx
+    return "#%s" % hx
 
 
 def hex2rgb(str_rgb):
@@ -670,7 +669,8 @@ def web2hex(web, force_long=False):
 
     ## convert dec to hex:
 
-    return rgb2hex([float(int(v)) / 255 for v in COLOR_NAME_TO_RGB[web]], force_long)
+    return rgb2hex([float(int(v)) / 255 for v in COLOR_NAME_TO_RGB[web]],
+                   force_long)
 
 
 ## Missing functions convertion
@@ -781,6 +781,7 @@ def hash_or_str(obj):
         ## Adds the type name to make sure two object of different type but
         ## identical string representation get distinguished.
         return type(obj).__name__ + str(obj)
+
 
 ##
 ## All purpose object
@@ -1056,19 +1057,16 @@ class Color(object):
         self._hsl[2] = value
 
     def set_red(self, value):
-        r, g, b = self.rgb
-        r = value
-        self.rgb = (r, g, b)
+        _, g, b = self.rgb
+        self.rgb = (value, g, b)
 
     def set_green(self, value):
-        r, g, b = self.rgb
-        g = value
-        self.rgb = (r, g, b)
+        r, _, b = self.rgb
+        self.rgb = (r, value, b)
 
     def set_blue(self, value):
-        r, g, b = self.rgb
-        b = value
-        self.rgb = (r, g, b)
+        r, g, _ = self.rgb
+        self.rgb = (r, g, value)
 
     def set_hex(self, value):
         self.rgb = hex2rgb(value)

@@ -296,6 +296,8 @@ But on another non-Colour object::
 
     >>> red == None
     False
+    >>> red != None
+    True
 
 Actually, ``Colour`` instances will, politely enough, leave
 the other side of the equality have a chance to decide of the output,
@@ -312,6 +314,18 @@ the other side of the equality have a chance to decide of the output,
     True
     >>> blue == alien_red
     False
+
+And inequality (using ``__ne__``) are also polite::
+
+    >>> class AnotherColorImplem(OtherColorImplem):
+    ...     def __ne__(self, other):
+    ...         return self.color != other.web
+
+    >>> new_alien_red = AnotherColorImplem("red")
+    >>> red != new_alien_red
+    False
+    >>> blue != new_alien_red
+    True
 
 
 Picking arbitrary color for a python object

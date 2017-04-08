@@ -38,6 +38,8 @@ from __future__ import with_statement, print_function
 
 import hashlib
 import re
+import sys
+
 
 ##
 ## Some Constants
@@ -931,6 +933,12 @@ class Color(object):
 
         >>> Color('red') == Color('blue')
         False
+        >>> Color('red') == Color('red')
+        True
+        >>> Color('red') != Color('blue')
+        True
+        >>> Color('red') != Color('red')
+        False
 
     But this can be changed:
 
@@ -1090,6 +1098,12 @@ class Color(object):
         if isinstance(other, Color):
             return self.equality(self, other)
         return NotImplemented
+
+    if sys.version_info[0] == 2:
+        ## Note: intended to be a backport of python 3 behavior
+        def __ne__(self, other):
+            equal = self.__eq__(other)
+            return equal if equal is NotImplemented else not equal
 
 
 RGB_equivalence = lambda c1, c2: c1.hex_l == c2.hex_l

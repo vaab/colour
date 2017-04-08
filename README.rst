@@ -6,6 +6,14 @@ Colour
    :target: https://pypi.python.org/pypi/colour/
    :alt: Latest PyPI version
 
+.. image:: https://img.shields.io/pypi/l/gitchangelog.svg?style=flat
+   :target: https://github.com/vaab/gitchangelog/blob/master/LICENSE
+   :alt: License
+
+.. image:: https://img.shields.io/pypi/pyversions/gitchangelog.svg?style=flat
+   :target: https://pypi.python.org/pypi/gitchangelog/
+   :alt: Compatible python versions
+
 .. image:: http://img.shields.io/pypi/dm/colour.svg?style=flat
    :target: https://pypi.python.org/pypi/colour/
    :alt: Number of PyPI downloads

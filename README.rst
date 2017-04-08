@@ -22,8 +22,8 @@ Colour
    :target: https://travis-ci.org/vaab/colour/
    :alt: Travis CI build status
 
-.. image:: http://img.shields.io/coveralls/vaab/colour/master.svg?style=flat
-   :target: https://coveralls.io/r/vaab/colour
+.. image:: http://img.shields.io/codecov/c/github/vaab/colour.svg?style=flat
+   :target: https://codecov.io/gh/vaab/colour/
    :alt: Test coverage
 
 

@@ -6,11 +6,12 @@ python:
   - "2.7"
 install:
   - if [ -e requirements.txt ]; then pip install -r requirements.txt ; fi
+  - pip install coverage
   - python setup.py develop easy_install "$(./autogen.sh --get-name)[test]"  ## getting deps
 script:
   - nosetests -sx .
 after_success:
-  - coveralls
+  - "bash <(curl -s https://codecov.io/bash)  #dovis: ignore"
 
 
 ## Ignored by Travis, but used internally to check packaging

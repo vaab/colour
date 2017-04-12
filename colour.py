@@ -36,6 +36,7 @@ Please see the documentation of this object for more information.
 
 from __future__ import with_statement, print_function
 
+import collections
 import hashlib
 import re
 import sys
@@ -224,9 +225,9 @@ class C_RGB:
     >>> from colour import RGB
 
     >>> RGB.WHITE
-    (1.0, 1.0, 1.0)
+    Rgb(red=1.0, green=1.0, blue=1.0)
     >>> RGB.BLUE
-    (0.0, 0.0, 1.0)
+    Rgb(red=0.0, green=0.0, blue=1.0)
 
     >>> RGB.DONOTEXISTS  # doctest: +ELLIPSIS
     Traceback (most recent call last):
@@ -266,6 +267,14 @@ HEX = C_HEX()
 
 
 ##
+## Types
+##
+
+Hsl = collections.namedtuple("Hsl", ["hue", "saturation", "luminance"])
+Rgb = collections.namedtuple("Rgb", ["red", "green", "blue"])
+
+
+##
 ## Convertion function
 ##
 
@@ -294,41 +303,41 @@ def hsl2rgb(hsl):
     With a lightness put at 0, RGB is always rgbblack
 
     >>> hsl2rgb((0.0, 0.0, 0.0))
-    (0.0, 0.0, 0.0)
+    Rgb(red=0.0, green=0.0, blue=0.0)
     >>> hsl2rgb((0.5, 0.0, 0.0))
-    (0.0, 0.0, 0.0)
+    Rgb(red=0.0, green=0.0, blue=0.0)
     >>> hsl2rgb((0.5, 0.5, 0.0))
-    (0.0, 0.0, 0.0)
+    Rgb(red=0.0, green=0.0, blue=0.0)
 
     Same for lightness put at 1, RGB is always rgbwhite
 
     >>> hsl2rgb((0.0, 0.0, 1.0))
-    (1.0, 1.0, 1.0)
+    Rgb(red=1.0, green=1.0, blue=1.0)
     >>> hsl2rgb((0.5, 0.0, 1.0))
-    (1.0, 1.0, 1.0)
+    Rgb(red=1.0, green=1.0, blue=1.0)
     >>> hsl2rgb((0.5, 0.5, 1.0))
-    (1.0, 1.0, 1.0)
+    Rgb(red=1.0, green=1.0, blue=1.0)
 
     With saturation put at 0, the RGB should be equal to Lightness:
 
     >>> hsl2rgb((0.0, 0.0, 0.25))
-    (0.25, 0.25, 0.25)
+    Rgb(red=0.25, green=0.25, blue=0.25)
     >>> hsl2rgb((0.5, 0.0, 0.5))
-    (0.5, 0.5, 0.5)
+    Rgb(red=0.5, green=0.5, blue=0.5)
     >>> hsl2rgb((0.5, 0.0, 0.75))
-    (0.75, 0.75, 0.75)
+    Rgb(red=0.75, green=0.75, blue=0.75)
 
     With saturation put at 1, and lightness put to 0.5, we can find
     normal full red, green, blue colors:
 
     >>> hsl2rgb((0 , 1.0, 0.5))
-    (1.0, 0.0, 0.0)
+    Rgb(red=1.0, green=0.0, blue=0.0)
     >>> hsl2rgb((1 , 1.0, 0.5))
-    (1.0, 0.0, 0.0)
+    Rgb(red=1.0, green=0.0, blue=0.0)
     >>> hsl2rgb((1.0/3 , 1.0, 0.5))
-    (0.0, 1.0, 0.0)
+    Rgb(red=0.0, green=1.0, blue=0.0)
     >>> hsl2rgb((2.0/3 , 1.0, 0.5))
-    (0.0, 0.0, 1.0)
+    Rgb(red=0.0, green=0.0, blue=1.0)
 
     Of course:
     >>> hsl2rgb((0.0, 2.0, 0.5))  # doctest: +ELLIPSIS
@@ -351,7 +360,7 @@ def hsl2rgb(hsl):
         raise ValueError("Lightness must be between 0 and 1.")
 
     if s == 0:
-        return l, l, l
+        return Rgb(l, l, l)
 
     if l < 0.5:
         v2 = l * (1.0 + s)
@@ -364,7 +373,7 @@ def hsl2rgb(hsl):
     g = _hue2rgb(v1, v2, h)
     b = _hue2rgb(v1, v2, h - (1.0 / 3))
 
-    return r, g, b
+    return Rgb(r, g, b)
 
 
 def rgb2hsl(rgb):
@@ -387,35 +396,35 @@ def rgb2hsl(rgb):
 
 
     >>> rgb2hsl((1.0, 1.0, 1.0))  # doctest: +ELLIPSIS
-    (..., 0.0, 1.0)
+    Hsl(hue=..., saturation=0.0, luminance=1.0)
     >>> rgb2hsl((0.5, 0.5, 0.5))  # doctest: +ELLIPSIS
-    (..., 0.0, 0.5)
+    Hsl(hue=..., saturation=0.0, luminance=0.5)
     >>> rgb2hsl((0.0, 0.0, 0.0))  # doctest: +ELLIPSIS
-    (..., 0.0, 0.0)
+    Hsl(hue=..., saturation=0.0, luminance=0.0)
 
     If only one color is different from the others, it defines the
     direct Hue:
 
     >>> rgb2hsl((0.5, 0.5, 1.0))  # doctest: +ELLIPSIS
-    (0.66..., 1.0, 0.75)
+    Hsl(hue=0.66..., saturation=1.0, luminance=0.75)
     >>> rgb2hsl((0.2, 0.1, 0.1))  # doctest: +ELLIPSIS
-    (0.0, 0.33..., 0.15...)
+    Hsl(hue=0.0, saturation=0.33..., luminance=0.15...)
 
     Having only one value set, you can check that:
 
     >>> rgb2hsl((1.0, 0.0, 0.0))
-    (0.0, 1.0, 0.5)
+    Hsl(hue=0.0, saturation=1.0, luminance=0.5)
     >>> rgb2hsl((0.0, 1.0, 0.0))  # doctest: +ELLIPSIS
-    (0.33..., 1.0, 0.5)
+    Hsl(hue=0.33..., saturation=1.0, luminance=0.5)
     >>> rgb2hsl((0.0, 0.0, 1.0))  # doctest: +ELLIPSIS
-    (0.66..., 1.0, 0.5)
+    Hsl(hue=0.66..., saturation=1.0, luminance=0.5)
 
     Regression check upon very close values in every component of
     red, green and blue:
 
     >>> rgb2hsl((0.9999999999999999, 1.0, 0.9999999999999994))
     ...     ## doctest: +ELLIPSIS
-    (0.0, 0.0, 0.999...)
+    Hsl(hue=0.0, saturation=0.0, luminance=0.999...)
 
     Of course:
 
@@ -447,7 +456,7 @@ def rgb2hsl(rgb):
     l = vsum / 2
 
     if diff < FLOAT_ERROR:  ## This is a gray, no chroma...
-        return (0.0, 0.0, l)
+        return Hsl(0.0, 0.0, l)
 
     ##
     ## Chromatic data...
@@ -473,7 +482,7 @@ def rgb2hsl(rgb):
     if h < 0: h += 1
     if h > 1: h -= 1
 
-    return (h, s, l)
+    return Hsl(h, s, l)
 
 
 def _hue2rgb(v1, v2, vH):
@@ -491,6 +500,32 @@ def _hue2rgb(v1, v2, vH):
     if 3 * vH < 2: return v1 + (v2 - v1) * ((2.0 / 3) - vH) * 6
 
     return v1
+
+
+def hexl2hexs(hex):
+    """Shorten from 6 to 3 hex represention if possible
+
+    Usage
+    -----
+
+        >>> from colour import rgb2hex
+
+    Provided a long string hex format, it should shorten it when
+    possible::
+
+        >>> hexl2hexs('#00ff00')
+        '#0f0'
+
+    In the following case, it is not possible to shorten, thus::
+
+        >>> hexl2hexs('#01ff00')
+        '#01ff00'
+
+    """
+
+    if len(hex) == 7 and hex[1::2] == hex[2::2]:
+        return "#" + ''.join(hex[1::2])
+    return hex
 
 
 def rgb2hex(rgb, force_long=False):
@@ -522,13 +557,9 @@ def rgb2hex(rgb, force_long=False):
 
     """
 
-    hx = ''.join(["%02x" % int(c * 255 + 0.5 - FLOAT_ERROR)
-                  for c in rgb])
-
-    if not force_long and hx[0::2] == hx[1::2]:
-        hx = ''.join(hx[0::2])
-
-    return "#%s" % hx
+    hx = "#" + ''.join(["%02x" % int(c * 255 + 0.5 - FLOAT_ERROR)
+                        for c in rgb])
+    return hx if force_long else hexl2hexs(hx)
 
 
 def hex2rgb(str_rgb):
@@ -540,18 +571,18 @@ def hex2rgb(str_rgb):
     >>> from colour import hex2rgb
 
     >>> hex2rgb('#00ff00')
-    (0.0, 1.0, 0.0)
+    Rgb(red=0.0, green=1.0, blue=0.0)
 
     >>> hex2rgb('#0f0')
-    (0.0, 1.0, 0.0)
+    Rgb(red=0.0, green=1.0, blue=0.0)
 
     >>> hex2rgb('#aaa')  # doctest: +ELLIPSIS
-    (0.66..., 0.66..., 0.66...)
+    Rgb(red=0.66..., green=0.66..., blue=0.66...)
 
     >>> hex2rgb('#aa')  # doctest: +ELLIPSIS
     Traceback (most recent call last):
     ...
-    ValueError: Invalid value '#aa' provided for rgb color.
+    ValueError: Invalid value '#aa' provided as hex color for rgb conversion.
 
     """
 
@@ -565,10 +596,11 @@ def hex2rgb(str_rgb):
         else:
             raise ValueError()
     except:
-        raise ValueError("Invalid value %r provided for rgb color."
-                         % str_rgb)
+        raise ValueError(
+            "Invalid value %r provided as hex color for rgb conversion."
+            % str_rgb)
 
-    return tuple([float(int(v, 16)) / 255 for v in (r, g, b)])
+    return Rgb(*[float(int(v, 16)) / 255 for v in (r, g, b)])
 
 
 def hex2web(hex):
@@ -606,13 +638,7 @@ def hex2web(hex):
         return color_name if len(re.sub(r"[^A-Z]", "", color_name)) > 1 \
                else color_name.lower()
 
-    # Hex format is verified by hex2rgb function. And should be 3 or 6 digit
-    if len(hex) == 7:
-        if hex[1] == hex[2] and \
-           hex[3] == hex[4] and \
-           hex[5] == hex[6]:
-            return '#' + hex[1] + hex[3] + hex[5]
-    return hex
+    return hexl2hexs(hex)
 
 
 def web2hex(web, force_long=False):
@@ -674,8 +700,6 @@ def web2hex(web, force_long=False):
     web = web.lower()
     if web not in COLOR_NAME_TO_RGB:
         raise ValueError("%r is not a recognized color." % web)
-
-    ## convert dec to hex:
 
     return rgb2hex([float(int(v)) / 255 for v in COLOR_NAME_TO_RGB[web]],
                    force_long)
@@ -788,7 +812,7 @@ def hash_or_str(obj):
     except TypeError:
         ## Adds the type name to make sure two object of different type but
         ## identical string representation get distinguished.
-        return type(obj).__name__ + str(obj)
+        return "\0".join([type(obj).__name__, str(obj)])
 
 
 ##
@@ -824,9 +848,9 @@ class Color(object):
         0.0
 
         >>> b.rgb
-        (0.0, 0.0, 1.0)
+        Rgb(red=0.0, green=0.0, blue=1.0)
         >>> b.hsl  # doctest: +ELLIPSIS
-        (0.66..., 1.0, 0.5)
+        Hsl(hue=0.66..., saturation=1.0, luminance=0.5)
         >>> b.hex
         '#00f'
 
@@ -847,7 +871,7 @@ class Color(object):
 
         >>> b.hex = '#f00'
         >>> b.hsl
-        (0.0, 1.0, 0.5)
+        Hsl(hue=0.0, saturation=1.0, luminance=0.5)
 
     Long hex can be accessed directly:
 
@@ -875,9 +899,9 @@ class Color(object):
 
         >>> c.saturation = 0.0
         >>> c.hsl  # doctest: +ELLIPSIS
-        (..., 0.0, 0.5)
+        Hsl(hue=..., saturation=0.0, luminance=0.5)
         >>> c.rgb
-        (0.5, 0.5, 0.5)
+        Rgb(red=0.5, green=0.5, blue=0.5)
         >>> c.hex
         '#7f7f7f'
         >>> c
@@ -967,7 +991,7 @@ class Color(object):
     And keep the internal API working::
 
         >>> Tint("red").hsl
-        (0.0, 1.0, 0.5)
+        Hsl(hue=0.0, saturation=1.0, luminance=0.5)
 
     """
 
@@ -1013,7 +1037,7 @@ class Color(object):
     ##
 
     def get_hsl(self):
-        return tuple(self._hsl)
+        return Hsl(*self._hsl)
 
     def get_hex(self):
         return rgb2hex(self.rgb)

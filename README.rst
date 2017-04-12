@@ -37,6 +37,9 @@ Converts and manipulates common color representation (RGB, HSL, web, ...)
 Feature
 =======
 
+- one small file package, no dependencies, 100% tests full coverage,
+  fully documented.
+
 - Damn simple and pythonic way to manipulate color representation (see
   examples below)
 
@@ -54,8 +57,16 @@ Feature
 
 - can pick colors for you to identify objects of your application.
 
-
 .. _W3C color naming: http://www.w3.org/TR/css3-color/#svg-color
+
+
+Requirements
+============
+
+``colour`` is compatible Python 2 and Python 3 on
+Linux/BSD/MacOSX and Windows.
+
+Please submit an issue if you encounter incompatibilities.
 
 
 Installation
@@ -122,12 +133,14 @@ Several representations are accessible::
     >>> c.hex
     '#00f'
     >>> c.hsl  # doctest: +ELLIPSIS
-    (0.66..., 1.0, 0.5)
+    Hsl(hue=0.66..., saturation=1.0, luminance=0.5)
     >>> c.rgb
-    (0.0, 0.0, 1.0)
+    Rgb(red=0.0, green=0.0, blue=1.0)
 
-And their different parts are also independently accessible, as the different
-amount of red, blue, green, in the RGB format::
+These two last are ``namedtuple`` and can be used as normal tuples.
+
+And their different sub values are also independently accessible, as
+the different amount of red, blue, green, in the RGB format::
 
     >>> c.red
     0.0
@@ -343,6 +356,7 @@ And inequality (using ``__ne__``) are also polite::
 Picking arbitrary color for a python object
 -------------------------------------------
 
+
 Basic Usage
 ~~~~~~~~~~~
 
@@ -362,6 +376,7 @@ same for same objects, and different for different object::
 
 Of course, although there's a tiny probability that different strings yield the
 same color, most of the time, different inputs will produce different colors.
+
 
 Advanced Usage
 ~~~~~~~~~~~~~~
@@ -390,9 +405,22 @@ Thus::
     >>> my_obj_color == my_str_color
     False
 
+And with unhashable types... here we consider as equivalent two
+instances with same ``str`` representation::
+
+    >>> class MyObj(dict): pass
+    >>> my_dict = MyObj(foo=1)
+    >>> my_obj_color = Color(pick_for=my_dict)
+    >>> new_dict = MyObj()  ## new_dict has not the same content as my_dict yet
+    >>> Color(pick_for=my_dict) == Color(pick_for=new_dict)
+    False
+    >>> new_dict["foo"] = 1  ## now they have equivalent string representation
+    >>> Color(pick_for=my_dict) == Color(pick_for=new_dict)
+    True
+
 Please make sure your object is hashable or "stringable" before using the
 ``RGB_color_picker`` picking mechanism or provide another color picker. Nearly
-all python object are hashable by default so this shouldn't be an issue (e.g. 
+all python object are hashable by default so this shouldn't be an issue (e.g.
 instances of ``object`` and subclasses are hashable).
 
 Neither ``hash`` nor ``str`` are perfect solution. So feel free to use
@@ -436,7 +464,7 @@ would get the specified attributes by default::
     >>> black_red = get_color("red", luminance=0)
     >>> black_blue = get_color("blue", luminance=0)
 
-Of course, these are always instances of ``Color`` class::
+Of course, these are still instances of ``Color`` class::
 
     >>> isinstance(black_red, Color)
     True

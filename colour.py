@@ -274,6 +274,34 @@ Hsl = collections.namedtuple("Hsl", ["hue", "saturation", "luminance"])
 Rgb = collections.namedtuple("Rgb", ["red", "green", "blue"])
 
 
+def format_get(label, formats):
+    for f in formats:
+        if label == format_id(f):
+            return f
+    return None
+
+
+def format_id(f):
+    if isinstance(f, type):
+        return f.__name__.lower()
+    else:
+        return f
+
+
+def format_get_by_attr(label, formats):
+    for f in formats:
+        for attr in getattr(f, "_fields", []):
+            if label == attr:
+                return f
+    return None
+
+
+def format_find(label, formats):
+    f = format_get(label, formats)
+    if f is not None:
+        return f, None
+    return format_get_by_attr(label, formats), label
+
 ##
 ## Convertion function
 ##
@@ -996,6 +1024,7 @@ class Color(object):
     """
 
     _hsl = None   ## internal representation
+    _FORMATS = [Rgb, Hsl, "hex", "web"]
 
     def __init__(self, color=None,
                  pick_for=None, picker=RGB_color_picker, pick_key=hash_or_str,
@@ -1019,6 +1048,20 @@ class Color(object):
 
     def __getattr__(self, label):
         if label.startswith("get_"):
+            l = label[4:]
+            f, attr = format_find(l, self._FORMATS)
+            if f is not None:
+                current_format = Hsl
+                if attr is not None:
+                    return lambda: getattr(
+                        getattr(self, format_id(f)),
+                        attr)
+                function_label = "%s2%s" % (format_id(current_format),
+                                            format_id(f))
+                fun = globals().get(function_label)
+                if fun:
+                    return lambda: fun(
+                        getattr(self, format_id(current_format)))
             raise AttributeError("'%s' not found" % label)
         try:
             return getattr(self, 'get_' + label)()
@@ -1026,11 +1069,30 @@ class Color(object):
             raise AttributeError("'%s' not found" % label)
 
     def __setattr__(self, label, value):
-        if label not in ["_hsl", "equality"]:
-            fc = getattr(self, 'set_' + label)
-            fc(value)
-        else:
+        if label in ["_hsl", "equality"]:
             self.__dict__[label] = value
+            return
+
+        method_label = 'set_' + label
+        if hasattr(self, method_label):
+            fc = getattr(self, method_label)
+            fc(value)
+            return
+        f, attr = format_find(label, self._FORMATS)
+        if f is not None:
+            current_format = Hsl
+            if attr is not None:
+                setattr(self, format_id(f),
+                        getattr(self, format_id(f))._replace(**{attr: value}))
+                return
+            function_label = "%s2%s" % (format_id(f),
+                                        format_id(current_format))
+            fun = globals().get(function_label)
+            if fun:
+                setattr(self, format_id(current_format), fun(value))
+                return
+
+        raise AttributeError(label)
 
     ##
     ## Get
@@ -1039,35 +1101,8 @@ class Color(object):
     def get_hsl(self):
         return Hsl(*self._hsl)
 
-    def get_hex(self):
-        return rgb2hex(self.rgb)
-
     def get_hex_l(self):
         return rgb2hex(self.rgb, force_long=True)
-
-    def get_rgb(self):
-        return hsl2rgb(self.hsl)
-
-    def get_hue(self):
-        return self.hsl[0]
-
-    def get_saturation(self):
-        return self.hsl[1]
-
-    def get_luminance(self):
-        return self.hsl[2]
-
-    def get_red(self):
-        return self.rgb[0]
-
-    def get_green(self):
-        return self.rgb[1]
-
-    def get_blue(self):
-        return self.rgb[2]
-
-    def get_web(self):
-        return hex2web(self.hex)
 
     ##
     ## Set
@@ -1076,37 +1111,7 @@ class Color(object):
     def set_hsl(self, value):
         self._hsl = list(value)
 
-    def set_rgb(self, value):
-        self.hsl = rgb2hsl(value)
-
-    def set_hue(self, value):
-        self._hsl[0] = value
-
-    def set_saturation(self, value):
-        self._hsl[1] = value
-
-    def set_luminance(self, value):
-        self._hsl[2] = value
-
-    def set_red(self, value):
-        _, g, b = self.rgb
-        self.rgb = (value, g, b)
-
-    def set_green(self, value):
-        r, _, b = self.rgb
-        self.rgb = (r, value, b)
-
-    def set_blue(self, value):
-        r, g, _ = self.rgb
-        self.rgb = (r, g, value)
-
-    def set_hex(self, value):
-        self.rgb = hex2rgb(value)
-
-    set_hex_l = set_hex
-
-    def set_web(self, value):
-        self.hex = web2hex(value)
+    set_hex_l = lambda s, v: setattr(s, "hex", v)
 
     ## range of color generation
 

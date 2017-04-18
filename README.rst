@@ -131,11 +131,15 @@ Reading values
 Several representations are accessible::
 
     >>> c.hex
+    '#0000ff'
+    >>> c.hexs
     '#00f'
+    >>> c.web
+    'blue'
     >>> c.hsl  # doctest: +ELLIPSIS
-    Hsl(hue=0.66..., saturation=1.0, luminance=0.5)
+    HSL(hue=0.66..., saturation=1.0, luminance=0.5)
     >>> c.rgb
-    Rgb(red=0.0, green=0.0, blue=1.0)
+    RGB(red=0.0, green=0.0, blue=1.0)
 
 These two last are ``namedtuple`` and can be used as normal tuples.
 
@@ -158,12 +162,12 @@ Or the hue, saturation and luminance of the HSL representation::
     >>> c.luminance
     0.5
 
-A note on the ``.hex`` property, it'll return the smallest valid value
-when possible. If you are only interested by the long value, use
-``.hex_l``::
+A note on the ``.hex`` property: it'll return the 6 hexadigit, if you
+needed the version of this format that allow short 3 hexadigit when possible,
+use ``hexs`` format::
 
-    >>> c.hex_l
-    '#0000ff'
+    >>> c.hexs
+    '#00f'
 
 
 Modifying color objects

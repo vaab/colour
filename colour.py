@@ -410,7 +410,14 @@ def rgb2hsl(rgb):
     >>> rgb2hsl((0.0, 0.0, 1.0))  # doctest: +ELLIPSIS
     (0.66..., 1.0, 0.5)
 
+    Regression check upon very close values in every component of
+    red, green and blue:
+
+    >>> rgb2hsl((0.9999999999999999, 1.0, 0.9999999999999994))
+    (0.0, 0.0, 0.999...)
+
     Of course:
+
     >>> rgb2hsl((0.0, 2.0, 0.5))  # doctest: +ELLIPSIS
     Traceback (most recent call last):
     ...
@@ -438,7 +445,7 @@ def rgb2hsl(rgb):
 
     l = vsum / 2
 
-    if diff == 0.0:  ## This is a gray, no chroma...
+    if diff < FLOAT_ERROR:  ## This is a gray, no chroma...
         return (0.0, 0.0, l)
 
     ##

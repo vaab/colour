@@ -216,14 +216,28 @@ class FormatRegistry(list):
         f = self.get(label, None)
         if f is not None:
             return f, None
-        return self.get_by_attr(label), label
+        return self.get_by_attr(label)
 
     def get_by_attr(self, label):
-        for f in self:
+        if "_" in label:
+            format, label = label.split("_", 1)
+            f = self.get(format, None)
+            formats = [] if f is None else [f]
+        else:
+            formats = list(self)
+        ret = []
+        for f in formats:
             for attr in getattr(f, "_fields", []):
                 if label == attr:
-                    return f
-        return None
+                    ret.append(f)
+        if len(ret) > 1:
+            raise ValueError(
+                "Ambiguous attribute %r. Try one of: %s"
+                % (label, ", ".join("%s_%s" % (f, label) for f in ret)))
+        elif len(ret) == 1:
+            return ret[0], label
+        else:  ## len(ret) == 0:
+            return None, None
 
 
 def register_format(registry):
@@ -847,6 +861,91 @@ def mkDataSpace(formats, converters, picker=None,
     Notice that this only makes an error upon usage, because the
     internal format (see section) is not fixed, and will thus follow
     blindly the last attribute assignation's format.
+
+    subcomponent attribute
+    ----------------------
+
+    This is a very special feature geared toward the usage of
+    namedtuple formats.
+
+    Most dataspace usage are used as reference systems translation
+    between multi-dimensional data. Let's take for instance
+    translation between polar coordinates and cartesian
+    coordinates::
+
+        >>> import math
+        >>> fr2 = FormatRegistry()
+
+        >>> @register_format(fr2)
+        ... class Cartesian(Tuple("x", "y")): pass
+        >>> @register_format(fr2)
+        ... class Polar(Tuple("radius", "angle")): pass
+
+        >>> cr2 = ConverterRegistry()
+
+        >>> @register_converter(cr2, Cartesian, Polar)
+        ... def c2p(v): return math.sqrt(v.x**2 + v.y**2), math.atan2(v.y, v.x)
+        >>> @register_converter(cr2, Polar, Cartesian)
+        ... def p2c(p):
+        ...     return (p.radius * math.cos(p.angle),
+        ...             p.radius * math.sin(p.angle))
+
+        >>> class Point2D(mkDataSpace(fr2, cr2)): pass
+
+        >>> point = Point2D((1, 0))
+        >>> point
+        <Point2D Cartesian(x=1, y=0)>
+
+    The names of the subcomponent of the tuple are directly accessible
+    (if there are no ambiguity)::
+
+        >>> point.x
+        1
+
+        >>> point.angle = math.pi
+        >>> point.x
+        -1.0
+
+    In case of ambiguity, you can prefix your attribute label with the
+    format names as such:
+
+        >>> point.cartesian_y = 0.0
+        >>> point.cartesian_x = 1.0
+        >>> point.polar_angle
+        0.0
+
+    Here is such a case:
+
+        >>> fr3 = FormatRegistry()
+
+        >>> @register_format(fr3)
+        ... class Normal(Tuple("x", "y")): pass
+        >>> @register_format(fr3)
+        ... class Inverted(Tuple("x", "y")): pass
+
+        >>> cr3 = ConverterRegistry()
+
+        >>> @register_converter(cr3, Normal, Inverted)
+        ... def n2i(v): return v.y, v.x
+        >>> @register_converter(cr3, Inverted, Normal)
+        ... def i2n(v): return v.y, v.x
+
+    In this case, we don't expect attribute ``x`` to be found::
+
+        >>> class Point2D(mkDataSpace(fr3, cr3)): pass
+        >>> Point2D((1, 2)).x = 2
+        Traceback (most recent call last):
+        ...
+        ValueError: Ambiguous attribute 'x'. Try one of: normal_x, inverted_x
+
+        >>> Point2D((1, 2)).x
+        Traceback (most recent call last):
+        ...
+        ValueError: Ambiguous attribute 'x'. Try one of: normal_x, inverted_x
+
+
+    incorrect attribute
+    -------------------
 
     Of course, referring to an attribute label that can't be infered
     following the above rules then it'll cast an attribute error::

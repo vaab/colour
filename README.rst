@@ -153,6 +153,14 @@ the different amount of red, blue, green, in the RGB format::
     >>> c.green
     0.0
 
+Here the format is inferred to be RGB (it is the only format available
+having components named as these attributes), but you may want to be
+more explicit, by prefixing the attribute by the format name in lower
+case, so::
+
+    >>> c.rgb_red == c.red
+    True
+
 Or the hue, saturation and luminance of the HSL representation::
 
     >>> c.hue  # doctest: +ELLIPSIS

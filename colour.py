@@ -491,24 +491,24 @@ def register_converter(registry, src, dst, **kwargs):
 def color_scale(begin_hsl, end_hsl, nb):
     """Returns a list of nb color HSL tuples between begin_hsl and end_hsl
 
-    >>> from colour import color_scale
+        >>> from colour import color_scale
 
-    >>> [HSL(hsl).convert(HexS) for hsl in color_scale((0, 1, 0.5),
-    ...                                               (1, 1, 0.5), 3)]
-    ['#f00', '#0f0', '#00f', '#f00']
+        >>> [HSL(hsl).convert(HexS) for hsl in color_scale((0, 1, 0.5),
+        ...                                                (1, 1, 0.5), 3)]
+        ['#f00', '#0f0', '#00f', '#f00']
 
-    >>> [HSL(hsl).convert(HexS)
-    ...  for hsl in color_scale((0, 0, 0),
-    ...                         (0, 0, 1),
-    ...                         15)]  # doctest: +ELLIPSIS
-    ['#000', '#111', '#222', ..., '#ccc', '#ddd', '#eee', '#fff']
+        >>> [HSL(hsl).convert(HexS)
+        ...  for hsl in color_scale((0, 0, 0),
+        ...                         (0, 0, 1),
+        ...                         15)]  # doctest: +ELLIPSIS
+        ['#000', '#111', '#222', ..., '#ccc', '#ddd', '#eee', '#fff']
 
     Of course, asking for negative values is not supported:
 
-    >>> color_scale((0, 1, 0.5), (1, 1, 0.5), -2)
-    Traceback (most recent call last):
-    ...
-    ValueError: Unsupported negative number of colors (nb=-2).
+        >>> color_scale((0, 1, 0.5), (1, 1, 0.5), -2)
+        Traceback (most recent call last):
+        ...
+        ValueError: Unsupported negative number of colors (nb=-2).
 
     """
 
@@ -961,7 +961,8 @@ def mkDataSpace(formats, converters, picker=None,
                     except:
                         msg = format_last_exception()
                         raise ValueError(
-                            "Instantiation of %s failed with given value %s.\n%s"
+                            "Instantiation of %s failed with given value %s."
+                            "\n%s"
                             % (type(value).__name__, value, msg))
                 if self._internal_format:
                     value = value.convert(self._internal_format,
@@ -1030,20 +1031,20 @@ def format_last_exception(prefix="  | "):
     This allows to raise custom exception, without loosing the context of what
     caused the problem in the first place:
 
-    >>> def f():
-    ...     raise Exception("Something terrible happened")
-    >>> try:  ## doctest: +ELLIPSIS
-    ...     f()
-    ... except Exception:
-    ...     formated_exception = format_last_exception()
-    ...     raise ValueError('Oups, an error occured:\\n%s'
-    ...         % formated_exception)
-    Traceback (most recent call last):
-    ...
-    ValueError: Oups, an error occured:
-      | Traceback (most recent call last):
-    ...
-      | Exception: Something terrible happened
+        >>> def f():
+        ...     raise Exception("Something terrible happened")
+        >>> try:  ## doctest: +ELLIPSIS
+        ...     f()
+        ... except Exception:
+        ...     formated_exception = format_last_exception()
+        ...     raise ValueError('Oups, an error occured:\\n%s'
+        ...         % formated_exception)
+        Traceback (most recent call last):
+        ...
+        ValueError: Oups, an error occured:
+          | Traceback (most recent call last):
+        ...
+          | Exception: Something terrible happened
 
     """
 
@@ -1058,6 +1059,7 @@ def format_last_exception(prefix="  | "):
 
 ## Global module wide registry
 Formats = FormatRegistry()
+
 
 @register_format(Formats)
 class Web(String):
@@ -1208,60 +1210,60 @@ def hsl2rgb(hsl):
 
     Here are some quick notion of HSL to RGB convertion:
 
-    >>> from colour import hsl2rgb
+        >>> from colour import hsl2rgb
 
     With a lightness put at 0, RGB is always rgbblack
 
-    >>> hsl2rgb((0.0, 0.0, 0.0))
-    (0.0, 0.0, 0.0)
-    >>> hsl2rgb((0.5, 0.0, 0.0))
-    (0.0, 0.0, 0.0)
-    >>> hsl2rgb((0.5, 0.5, 0.0))
-    (0.0, 0.0, 0.0)
+        >>> hsl2rgb((0.0, 0.0, 0.0))
+        (0.0, 0.0, 0.0)
+        >>> hsl2rgb((0.5, 0.0, 0.0))
+        (0.0, 0.0, 0.0)
+        >>> hsl2rgb((0.5, 0.5, 0.0))
+        (0.0, 0.0, 0.0)
 
     Same for lightness put at 1, RGB is always rgbwhite
 
-    >>> hsl2rgb((0.0, 0.0, 1.0))
-    (1.0, 1.0, 1.0)
-    >>> hsl2rgb((0.5, 0.0, 1.0))
-    (1.0, 1.0, 1.0)
-    >>> hsl2rgb((0.5, 0.5, 1.0))
-    (1.0, 1.0, 1.0)
+        >>> hsl2rgb((0.0, 0.0, 1.0))
+        (1.0, 1.0, 1.0)
+        >>> hsl2rgb((0.5, 0.0, 1.0))
+        (1.0, 1.0, 1.0)
+        >>> hsl2rgb((0.5, 0.5, 1.0))
+        (1.0, 1.0, 1.0)
 
     With saturation put at 0, the RGB should be equal to Lightness:
 
-    >>> hsl2rgb((0.0, 0.0, 0.25))
-    (0.25, 0.25, 0.25)
-    >>> hsl2rgb((0.5, 0.0, 0.5))
-    (0.5, 0.5, 0.5)
-    >>> hsl2rgb((0.5, 0.0, 0.75))
-    (0.75, 0.75, 0.75)
+        >>> hsl2rgb((0.0, 0.0, 0.25))
+        (0.25, 0.25, 0.25)
+        >>> hsl2rgb((0.5, 0.0, 0.5))
+        (0.5, 0.5, 0.5)
+        >>> hsl2rgb((0.5, 0.0, 0.75))
+        (0.75, 0.75, 0.75)
 
     With saturation put at 1, and lightness put to 0.5, we can find
     normal full red, green, blue colors:
 
-    >>> hsl2rgb((0 , 1.0, 0.5))
-    (1.0, 0.0, 0.0)
-    >>> hsl2rgb((1 , 1.0, 0.5))
-    (1.0, 0.0, 0.0)
-    >>> hsl2rgb((1.0/3 , 1.0, 0.5))
-    (0.0, 1.0, 0.0)
-    >>> hsl2rgb((2.0/3 , 1.0, 0.5))
-    (0.0, 0.0, 1.0)
+        >>> hsl2rgb((0 , 1.0, 0.5))
+        (1.0, 0.0, 0.0)
+        >>> hsl2rgb((1 , 1.0, 0.5))
+        (1.0, 0.0, 0.0)
+        >>> hsl2rgb((1.0/3 , 1.0, 0.5))
+        (0.0, 1.0, 0.0)
+        >>> hsl2rgb((2.0/3 , 1.0, 0.5))
+        (0.0, 0.0, 1.0)
 
     Of course:
 
-    >>> hsl2rgb((0.0, 2.0, 0.5))  # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-    ...
-    ValueError: Saturation must be between 0 and 1.
+        >>> hsl2rgb((0.0, 2.0, 0.5))  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        ValueError: Saturation must be between 0 and 1.
 
     And:
 
-    >>> hsl2rgb((0.0, 0.0, 1.5))  # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-    ...
-    ValueError: Lightness must be between 0 and 1.
+        >>> hsl2rgb((0.0, 0.0, 1.5))  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        ValueError: Lightness must be between 0 and 1.
 
     """
     h, s, l = [float(v) for v in hsl]
@@ -1302,55 +1304,55 @@ def rgb2hsl(rgb):
 
     Here are some quick notion of RGB to HSL convertion:
 
-    >>> from colour import rgb2hsl
+        >>> from colour import rgb2hsl
 
     Note that if red amount is equal to green and blue, then you
     should have a gray value (from black to white).
 
-
-    >>> rgb2hsl((1.0, 1.0, 1.0))  # doctest: +ELLIPSIS
-    (..., 0.0, 1.0)
-    >>> rgb2hsl((0.5, 0.5, 0.5))  # doctest: +ELLIPSIS
-    (..., 0.0, 0.5)
-    >>> rgb2hsl((0.0, 0.0, 0.0))  # doctest: +ELLIPSIS
-    (..., 0.0, 0.0)
+        >>> rgb2hsl((1.0, 1.0, 1.0))  # doctest: +ELLIPSIS
+        (..., 0.0, 1.0)
+        >>> rgb2hsl((0.5, 0.5, 0.5))  # doctest: +ELLIPSIS
+        (..., 0.0, 0.5)
+        >>> rgb2hsl((0.0, 0.0, 0.0))  # doctest: +ELLIPSIS
+        (..., 0.0, 0.0)
 
     If only one color is different from the others, it defines the
     direct Hue:
 
-    >>> rgb2hsl((0.5, 0.5, 1.0))  # doctest: +ELLIPSIS
-    (0.66..., 1.0, 0.75)
-    >>> rgb2hsl((0.2, 0.1, 0.1))  # doctest: +ELLIPSIS
-    (0.0, 0.33..., 0.15...)
+        >>> rgb2hsl((0.5, 0.5, 1.0))  # doctest: +ELLIPSIS
+        (0.66..., 1.0, 0.75)
+        >>> rgb2hsl((0.2, 0.1, 0.1))  # doctest: +ELLIPSIS
+        (0.0, 0.33..., 0.15...)
 
     Having only one value set, you can check that:
 
-    >>> rgb2hsl((1.0, 0.0, 0.0))
-    (0.0, 1.0, 0.5)
-    >>> rgb2hsl((0.0, 1.0, 0.0))  # doctest: +ELLIPSIS
-    (0.33..., 1.0, 0.5)
-    >>> rgb2hsl((0.0, 0.0, 1.0))  # doctest: +ELLIPSIS
-    (0.66..., 1.0, 0.5)
+        >>> rgb2hsl((1.0, 0.0, 0.0))
+        (0.0, 1.0, 0.5)
+        >>> rgb2hsl((0.0, 1.0, 0.0))  # doctest: +ELLIPSIS
+        (0.33..., 1.0, 0.5)
+        >>> rgb2hsl((0.0, 0.0, 1.0))  # doctest: +ELLIPSIS
+        (0.66..., 1.0, 0.5)
 
     Regression check upon very close values in every component of
     red, green and blue:
 
-    >>> rgb2hsl((0.9999999999999999, 1.0, 0.9999999999999994))
-    ...     ## doctest: +ELLIPSIS
-    (0.0, 0.0, 0.999...)
+        >>> rgb2hsl((0.9999999999999999, 1.0, 0.9999999999999994))
+        ...     ## doctest: +ELLIPSIS
+        (0.0, 0.0, 0.999...)
 
     Of course:
 
-    >>> rgb2hsl((0.0, 2.0, 0.5))  # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-    ...
-    ValueError: Green must be between 0 and 1. You provided 2.0.
+        >>> rgb2hsl((0.0, 2.0, 0.5))  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        ValueError: Green must be between 0 and 1. You provided 2.0.
 
     And:
-    >>> rgb2hsl((0.0, 0.0, 1.5))  # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-    ...
-    ValueError: Blue must be between 0 and 1. You provided 1.5.
+
+        >>> rgb2hsl((0.0, 0.0, 1.5))  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        ValueError: Blue must be between 0 and 1. You provided 1.5.
 
     """
     r, g, b = [float(v) for v in rgb]
@@ -1389,7 +1391,7 @@ def rgb2hsl(rgb):
         h = db - dg
     elif g == vmax:
         h = (1.0 / 3) + dr - db
-    elif b == vmax:
+    else:  ##  b == vmax
         h = (2.0 / 3) + dg - dr
 
     if h < 0: h += 1
@@ -1477,18 +1479,18 @@ def rgb2hex(rgb):
     Usage
     -----
 
-    >>> from colour import rgb2hex
+        >>> from colour import rgb2hex
 
-    >>> rgb2hex((0.0, 1.0, 0.0))
-    '#00ff00'
+        >>> rgb2hex((0.0, 1.0, 0.0))
+        '#00ff00'
 
     Rounding try to be as natural as possible:
 
-    >>> rgb2hex((0.0, 0.999999, 1.0))
-    '#00ffff'
+        >>> rgb2hex((0.0, 0.999999, 1.0))
+        '#00ffff'
 
-    >>> rgb2hex((0.5, 0.999999, 1.0))
-    '#7fffff'
+        >>> rgb2hex((0.5, 0.999999, 1.0))
+        '#7fffff'
 
     """
 
@@ -1503,23 +1505,23 @@ def hex2rgb(str_rgb):
     :param str_rgb: 3 hex char or 6 hex char string representation
     :rtype: RGB 3-uple of float between 0 and 1
 
-    >>> from colour import hex2rgb
+        >>> from colour import hex2rgb
 
-    >>> hex2rgb('#00ff00')
-    (0.0, 1.0, 0.0)
+        >>> hex2rgb('#00ff00')
+        (0.0, 1.0, 0.0)
 
-    >>> hex2rgb('#0f0')
-    (0.0, 1.0, 0.0)
+        >>> hex2rgb('#0f0')
+        (0.0, 1.0, 0.0)
 
-    >>> hex2rgb('#aaa')  # doctest: +ELLIPSIS
-    (0.66..., 0.66..., 0.66...)
+        >>> hex2rgb('#aaa')  # doctest: +ELLIPSIS
+        (0.66..., 0.66..., 0.66...)
 
-    >>> hex2rgb('#aa')  # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-    ...
-    ValueError: Invalid value '#aa' provided as hex color for rgb conversion.
+        >>> hex2rgb('#aa')  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        ValueError: Invalid value '#aa' provided as hex color for rgb conversion.
 
-    """
+        """
 
     try:
         rgb = str_rgb[1:]
@@ -1551,16 +1553,16 @@ def hex2web(hex):
     Usage
     =====
 
-    >>> from colour import hex2web
+        >>> from colour import hex2web
 
-    >>> hex2web('#ff0000')
-    'red'
+        >>> hex2web('#ff0000')
+        'red'
 
-    >>> hex2web('#aaaaaa')
-    '#aaa'
+        >>> hex2web('#aaaaaa')
+        '#aaa'
 
-    >>> hex2web('#acacac')
-    '#acacac'
+        >>> hex2web('#acacac')
+        '#acacac'
 
     """
     dec_rgb = tuple(int(v * 255) for v in hex2rgb(hex))
@@ -1591,36 +1593,36 @@ def web2hex(web):
     Usage
     =====
 
-    >>> from colour import web2hex
+        >>> from colour import web2hex
 
-    >>> web2hex('red')
-    '#ff0000'
+        >>> web2hex('red')
+        '#ff0000'
 
-    >>> web2hex('#aaa')
-    '#aaaaaa'
+        >>> web2hex('#aaa')
+        '#aaaaaa'
 
-    >>> web2hex('#foo')  # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-    ...
-    AttributeError: '#foo' is not in web format. Need 3 or 6 hex digit.
+        >>> web2hex('#foo')  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        AttributeError: '#foo' is not in web format. Need 3 or 6 hex digit.
 
-    >>> web2hex('#aaaaaa')
-    '#aaaaaa'
+        >>> web2hex('#aaaaaa')
+        '#aaaaaa'
 
-    >>> web2hex('#aaaa')  # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-    ...
-    AttributeError: '#aaaa' is not in web format. Need 3 or 6 hex digit.
+        >>> web2hex('#aaaa')  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        AttributeError: '#aaaa' is not in web format. Need 3 or 6 hex digit.
 
-    >>> web2hex('pinky')  # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-    ...
-    ValueError: 'pinky' is not a recognized color.
+        >>> web2hex('pinky')  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        ValueError: 'pinky' is not a recognized color.
 
-    And color names are case insensitive:
+        And color names are case insensitive:
 
-    >>> Color('RED')
-    <Color red>
+        >>> Color('RED')
+        <Color red>
 
     """
     if web.startswith('#'):
@@ -1825,4 +1827,3 @@ class Color(mkDataSpace(formats=Formats, converters=Converters,
     def range_to(self, value, steps):
         for hsl in color_scale(self.hsl, self.__class__(value).hsl, steps - 1):
             yield self.__class__(hsl=hsl)
-

@@ -1226,7 +1226,7 @@ class HSL(Tuple("hue", "saturation", "luminance")):
 class HSV(Tuple("hue", "saturation", "value")):
     """3-uple of Hue, Saturation, Value all between 0.0 and 1.0
 
-    As all ``Format`` subclass, it can instanciate color based on the X11
+    As all ``Format`` subclass, it can instantiate color based on the X11
     color names::
 
         >>> HSV.blue  # doctest: +ELLIPSIS
@@ -1256,6 +1256,21 @@ class RGB(Tuple("red", "green", "blue")):
 
     """
 
+
+@register_format(Formats)
+class YIQ(Tuple("luma", "inphase", "quadrature")):
+    """3-uple of luma, inphase, quadrature
+
+    As all ``Format`` subclass, it can instantiate color based on the X11
+    color names::
+
+        >>> YIQ.green  # doctest: +ELLIPSIS
+        YIQ(luma=0.29..., inphase=-0.1..., quadrature=-0.26...)
+
+    Warning, results here will change slightly between python 2.7 and
+    python 3.4+
+
+    """
 
 
 @register_format(Formats)
@@ -1756,6 +1771,8 @@ def web2hex(web):
 
 register_converter(Converters, RGB, HSV)(lambda rgb: colorsys.rgb_to_hsv(*rgb))
 register_converter(Converters, HSV, RGB)(lambda hsv: colorsys.hsv_to_rgb(*hsv))
+register_converter(Converters, RGB, YIQ)(lambda rgb: colorsys.rgb_to_yiq(*rgb))
+register_converter(Converters, YIQ, RGB)(lambda yiq: colorsys.yiq_to_rgb(*yiq))
 
 
 class Color(mkDataSpace(formats=Formats, converters=Converters,
@@ -1805,6 +1822,8 @@ class Color(mkDataSpace(formats=Formats, converters=Converters,
         HSL(hue=0.66..., saturation=1.0, luminance=0.5)
         >>> b.hsv  # doctest: +ELLIPSIS
         HSV(hue=0.66..., saturation=1.0, value=1.0)
+        >>> b.yiq  # doctest: +ELLIPSIS
+        YIQ(luma=0.11, inphase=-0.32..., quadrature=0.31...)
         >>> b.hex
         '#0000ff'
         >>> b.web
@@ -1923,6 +1942,23 @@ class Color(mkDataSpace(formats=Formats, converters=Converters,
         0.5
         >>> c.hsl_saturation  # doctest: +ELLIPSIS
         1.0
+
+
+    YIQ Support
+    -----------
+
+        >>> c = Color('green')
+        >>> c.yiq  # doctest: +ELLIPSIS
+        YIQ(luma=0.29..., inphase=-0.1..., quadrature=-0.26...)
+        >>> c.yiq_luma  # doctest: +ELLIPSIS
+        0.29...
+
+    Reversing a YIQ value to RGB::
+
+        >>> c = Color(c.yiq)
+        >>> c.hex
+        '#008000'
+
 
     TODO: could add CMYK, YUV conversion.
 

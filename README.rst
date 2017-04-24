@@ -43,15 +43,15 @@ Feature
 - Damn simple and pythonic way to manipulate color representation (see
   examples below)
 
-- Full conversion between RGB, HSL, 6-digit hex, 3-digit hex, human color
-
-- One object (``Color``) or bunch of single purpose function (``rgb2hex``,
-  ``hsl2rgb`` ...)
+- Full conversion between RGB, HSL, HSV web ready format (see next point)
 
 - ``web`` format that use the smallest representation between
   6-digit (e.g. ``#fa3b2c``), 3-digit (e.g. ``#fbb``), fully spelled
   color (e.g. ``white``), following `W3C color naming`_ for compatible
   CSS or HTML color specifications.
+
+- One object (``Color``) or bunch of single purpose function (``rgb2hex``,
+  ``hsl2rgb`` ...)
 
 - smooth intuitive color scale generation choosing N color gradients.
 
@@ -116,10 +116,10 @@ Please note that all of these are equivalent examples to create the red color::
 
     Color("red")           ## human, web compatible representation
     Color(red=1)           ## default amount of blue and green is 0.0
-    Color("blue", hue=0)   ## hue of blue is 0.66, hue of red is 0.0
+    Color("blue", hsl_hue=0)   ## hue of blue is 0.66, hue of red is 0.0
     Color("#f00")          ## standard 3 hex digit web compatible representation
     Color("#ff0000")       ## standard 6 hex digit web compatible representation
-    Color(hue=0, saturation=1, luminance=0.5)
+    Color(hsl_hue=0, hsl_saturation=1, hsl_luminance=0.5)
     Color(hsl=(0, 1, 0.5)) ## full 3-uple HSL specification
     Color(rgb=(1, 0, 0))   ## full 3-uple RGB specification
     Color(Color("red"))    ## recursion doesn't break object
@@ -138,10 +138,12 @@ Several representations are accessible::
     'blue'
     >>> c.hsl  # doctest: +ELLIPSIS
     HSL(hue=0.66..., saturation=1.0, luminance=0.5)
+    >>> c.hsv  # doctest: +ELLIPSIS
+    HSV(hue=0.66..., saturation=1.0, value=1.0)
     >>> c.rgb
     RGB(red=0.0, green=0.0, blue=1.0)
 
-These two last are ``namedtuple`` and can be used as normal tuples.
+These last values are ``namedtuple`` and can be used as normal tuples.
 
 And their different sub values are also independently accessible, as
 the different amount of red, blue, green, in the RGB format::
@@ -161,13 +163,27 @@ case, so::
     >>> c.rgb_red == c.red
     True
 
+So, in the previous example, attributes are resolved as names of component
+of the RGB format. In some case, as for ``saturation``, it could
+be ambiguous to which format you are referring as more than one format
+((HSV and HSL) have a ``saturation`` component that are not valued the
+same way. If this happens, you'll get an exception::
+
+    >>> c.saturation
+    Traceback (most recent call last):
+    ...
+    ValueError: Ambiguous attribute 'saturation'. Try one of: hsl_saturation, hsv_saturation
+
+    >>> c.hsl_saturation
+    1.0
+
 Or the hue, saturation and luminance of the HSL representation::
 
-    >>> c.hue  # doctest: +ELLIPSIS
+    >>> c.hsl_hue  # doctest: +ELLIPSIS
     0.66...
-    >>> c.saturation
+    >>> c.hsl_saturation
     1.0
-    >>> c.luminance
+    >>> c.hsl_luminance
     0.5
 
 A note on the ``.hex`` property: it'll return the 6 hexadigit, if you
@@ -189,7 +205,7 @@ All of these properties are read/write, so let's add some red to this color::
 
 We might want to de-saturate this color::
 
-    >>> c.saturation = 0.5
+    >>> c.hsl_saturation = 0.5
     >>> c
     <Color #bf40bf>
 
@@ -246,7 +262,7 @@ Color comparison is a vast subject. However, it might seem quite straightforward
 you. ``Colour`` uses a configurable default way of comparing color that might suit
 your needs::
 
-    >>> Color("red") == Color("#f00") == Color("blue", hue=0)
+    >>> Color("red") == Color("#f00") == Color("blue", hsl_hue=0)
     True
 
 The default comparison algorithm focuses only on the "web" representation which is
@@ -290,7 +306,7 @@ As you might have already guessed, the sane default is ``RGB_equivalence``, so::
 
 Here's how you could implement your unique comparison function::
 
-   >>> saturation_equivalence = lambda c1, c2: c1.saturation == c2.saturation
+   >>> saturation_equivalence = lambda c1, c2: c1.hsl_saturation == c2.hsl_saturation
    >>> red = Color("red", equality=saturation_equivalence)
    >>> blue = Color("blue", equality=saturation_equivalence)
    >>> white = Color("white", equality=saturation_equivalence)

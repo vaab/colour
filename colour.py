@@ -26,6 +26,7 @@ import re
 import sys
 import traceback
 import inspect
+import colorsys
 
 
 ##
@@ -1222,6 +1223,19 @@ class HSL(Tuple("hue", "saturation", "luminance")):
 
 
 @register_format(Formats)
+class HSV(Tuple("hue", "saturation", "value")):
+    """3-uple of Hue, Saturation, Value all between 0.0 and 1.0
+
+    As all ``Format`` subclass, it can instanciate color based on the X11
+    color names::
+
+        >>> HSV.blue  # doctest: +ELLIPSIS
+        HSV(hue=0.66..., saturation=1.0, value=1.0)
+
+    """
+
+
+@register_format(Formats)
 class RGB(Tuple("red", "green", "blue")):
     """3-uple of Red, Green, Blue all values between 0.0 and 1.0
 
@@ -1241,6 +1255,7 @@ class RGB(Tuple("red", "green", "blue")):
         AttributeError: ... has no attribute 'DOESNOTEXIST'
 
     """
+
 
 
 @register_format(Formats)
@@ -1739,6 +1754,10 @@ def web2hex(web):
     return rgb2hex([float(int(v)) / 255 for v in COLOR_NAME_TO_RGB[web]])
 
 
+register_converter(Converters, RGB, HSV)(lambda rgb: colorsys.rgb_to_hsv(*rgb))
+register_converter(Converters, HSV, RGB)(lambda hsv: colorsys.hsv_to_rgb(*hsv))
+
+
 class Color(mkDataSpace(formats=Formats, converters=Converters,
                         picker=RGB_color_picker)):
     """Abstraction of a color object
@@ -1755,12 +1774,7 @@ class Color(mkDataSpace(formats=Formats, converters=Converters,
     Access values
     -------------
 
-        >>> b.hue  # doctest: +ELLIPSIS
-        0.66...
-        >>> b.saturation
-        1.0
-        >>> b.luminance
-        0.5
+    Direct attribute will be resolved in available format::
 
         >>> b.red
         0.0
@@ -1769,23 +1783,43 @@ class Color(mkDataSpace(formats=Formats, converters=Converters,
         >>> b.green
         0.0
 
+    In the previous example, attributes are resolved as names of
+    component of the RGB format. In some case you need to be more
+    specific by prefixing by the format name, so::
+
+        >>> b.red == b.rgb_red
+        True
+
+    Hsl components for instances are accessible::
+
+        >>> b.hsl_saturation
+        1.0
+        >>> b.hsl_hue  # doctest: +ELLIPSIS
+        0.66...
+        >>> b.hsl_luminance
+        0.5
+
         >>> b.rgb
         RGB(red=0.0, green=0.0, blue=1.0)
         >>> b.hsl  # doctest: +ELLIPSIS
         HSL(hue=0.66..., saturation=1.0, luminance=0.5)
+        >>> b.hsv  # doctest: +ELLIPSIS
+        HSV(hue=0.66..., saturation=1.0, value=1.0)
         >>> b.hex
         '#0000ff'
+        >>> b.web
+        'blue'
 
     Change values
     -------------
 
     Let's change Hue toward red tint:
 
-        >>> b.hue = 0.0
+        >>> b.hsl_hue = 0.0
         >>> b.hex
         '#ff0000'
 
-        >>> b.hue = 2.0/3
+        >>> b.hsl_hue = 2.0/3
         >>> b.hex
         '#0000ff'
 
@@ -1815,11 +1849,11 @@ class Color(mkDataSpace(formats=Formats, converters=Converters,
         >>> c = Color('blue')
         >>> c
         <Color blue>
-        >>> c.hue = 0
+        >>> c.hsl_hue = 0
         >>> c
         <Color red>
 
-        >>> c.saturation = 0.0
+        >>> c.hsl_saturation = 0.0
         >>> c.hsl  # doctest: +ELLIPSIS
         HSL(hue=..., saturation=0.0, luminance=0.5)
         >>> c.rgb
@@ -1867,7 +1901,30 @@ class Color(mkDataSpace(formats=Formats, converters=Converters,
         ...
         AttributeError: 'lightness' not found
 
-    TODO: could add HSV, CMYK, YUV conversion.
+    HSV Support
+    -----------
+
+        >>> c = Color('red')
+        >>> c.hsv
+        HSV(hue=0.0, saturation=1.0, value=1.0)
+        >>> c.value
+        1.0
+
+        >>> c.rgb = (0.099, 0.795, 0.591)
+        >>> c.hsv  # doctest: +ELLIPSIS
+        HSV(hue=0.45..., saturation=0.87..., value=0.79...)
+        >>> c.hsv = HSV(hue=0.0, saturation=0.5, value=1.0)
+        >>> c.hex
+        '#ff7f7f'
+
+    Notice how HSV saturation is different from HSL one:
+
+        >>> c.hsv_saturation  # doctest: +ELLIPSIS
+        0.5
+        >>> c.hsl_saturation  # doctest: +ELLIPSIS
+        1.0
+
+    TODO: could add CMYK, YUV conversion.
 
 #     >>> b.hsv
 #     >>> b.value

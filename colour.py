@@ -1322,17 +1322,18 @@ Converters = ConverterRegistry()
 def hsl2rgb(hsl):
     """Convert HSL representation towards RGB
 
-    :param h: Hue, position around the chromatic circle (h=1 equiv h=0)
-    :param s: Saturation, color saturation (0=full gray, 1=full color)
-    :param l: Ligthness, Overhaul lightness (0=full black, 1=full white)
+    :param hsl: 3-uple with
+        Hue, position around the chromatic circle (h=1 equiv h=0)
+        Saturation, color saturation (0=full gray, 1=full color)
+        Ligthness, Overhaul lightness (0=full black, 1=full white)
     :rtype: 3-uple for RGB values in float between 0 and 1
 
     Hue, Saturation, Range from Lightness is a float between 0 and 1
 
     Note that Hue can be set to any value but as it is a rotation
-    around the chromatic circle, any value above 1 or below 0 can
-    be expressed by a value between 0 and 1 (Note that h=0 is equiv
-    to h=1).
+    around the chromatic circle, any value above 1 or below 0 can be
+    expressed by a value between 0 and 1 (Note that h=0 is equiv to
+    h=1).
 
     This algorithm came from:
     http://www.easyrgb.com/index.php?X=MATH&H=19#text19
@@ -1423,9 +1424,7 @@ def hsl2rgb(hsl):
 def rgb2hsl(rgb):
     """Convert RGB representation towards HSL
 
-    :param r: Red amount (float between 0 and 1)
-    :param g: Green amount (float between 0 and 1)
-    :param b: Blue amount (float between 0 and 1)
+    :param rgb: 3-uple Red, Green, Blue amount (floats between 0 and 1)
     :rtype: 3-uple for HSL values in float between 0 and 1
 
     This algorithm came from:
@@ -1575,7 +1574,7 @@ def hex2hexs(hex):
 
 @register_converter(Converters, HexS, Hex)
 def hexs2hex(hex):
-    """Enlarge possible short 3 hexgit to give full hex 6 char long
+    """Enlarge possible short 3 hex char string to give full hex 6 char string
 
     Usage
     -----
@@ -1603,7 +1602,7 @@ def rgb2hex(rgb):
     """Transform RGB tuple to hex RGB representation
 
     :param rgb: RGB 3-uple of float between 0 and 1
-    :rtype: 3 hex char or 6 hex char string representation
+    :rtype: 3 hex char or 6 hex char string representation with '#' prefix
 
     Usage
     -----
@@ -1631,7 +1630,7 @@ def rgb2hex(rgb):
 def hex2rgb(str_rgb):
     """Transform hex RGB representation to RGB tuple
 
-    :param str_rgb: 3 hex char or 6 hex char string representation
+    :param str_rgb: 3 hex char or 6 hex char string representation with '#' prefix.
     :rtype: RGB 3-uple of float between 0 and 1
 
         >>> from colour import hex2rgb
@@ -1673,7 +1672,7 @@ def hex2rgb(str_rgb):
 def hex2web(hex):
     """Converts Hex representation to Web
 
-    :param rgb: 3 hex char or 6 hex char string representation
+    :param hex: 3 hex char or 6 hex char string representation
     :rtype: web string representation (human readable if possible)
 
     Web representation uses X11 rgb.txt to define convertion
@@ -1709,7 +1708,7 @@ def hex2web(hex):
 def web2hex(web):
     """Converts Web representation to Hex
 
-    :param rgb: web string representation (human readable if possible)
+    :param web: web string representation (human readable if possible)
     :rtype: 3 hex char or 6 hex char string representation
 
     Web representation uses X11 rgb.txt (converted in array in this file)

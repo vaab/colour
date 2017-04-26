@@ -43,7 +43,8 @@ Feature
 - Damn simple and pythonic way to manipulate color representation (see
   examples below)
 
-- Full conversion between RGB, HSL, HSV, YIQ web ready format (see next point)
+- Full conversion between RGB, HSL, HSV, YIQ, CMY, CMYK web ready
+  format (see next point)
 
 - ``web`` format that use the smallest representation between
   6-digit (e.g. ``#fa3b2c``), 3-digit (e.g. ``#fbb``), fully spelled
@@ -142,6 +143,8 @@ Several representations are accessible::
     HSV(hue=0.66..., saturation=1.0, value=1.0)
     >>> c.yiq  # doctest: +ELLIPSIS
     YIQ(luma=0.11, inphase=-0.32..., quadrature=0.31...)
+    >>> c.cmyk  # doctest: +ELLIPSIS
+    CMYK(cyan=1.0, magenta=1.0, yellow=0.0, key=0.0)
     >>> c.rgb
     RGB(red=0.0, green=0.0, blue=1.0)
 

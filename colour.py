@@ -1272,6 +1272,34 @@ class YIQ(Tuple("luma", "inphase", "quadrature")):
 
     """
 
+@register_format(Formats)
+class CMY(Tuple("cyan", "magenta", "yellow")):
+    """3-uple of cyan, magenta, and yellow, all values are between 0. and 1.
+
+    As all ``Format`` subclass, it can instanciate color based on the X11
+    color names::
+
+        >>> CMY.CYAN  ## Avoid using 'cyan' as it conflict with property
+        CMY(cyan=1.0, magenta=0.0, yellow=0.0)
+
+    """
+
+
+@register_format(Formats)
+class CMYK(Tuple("cyan", "magenta", "yellow", "key")):
+    """4-uple of cyan, magenta, yellow, and key all values are between 0 and 1
+
+    As all ``Format`` subclass, it can instantiate color based on the X11
+    color names::
+
+        >>> CMYK.CYAN  ## Avoid using 'cyan' as it conflict with property
+        CMYK(cyan=1.0, magenta=0.0, yellow=0.0, key=0.0)
+        >>> CMYK.black
+        CMYK(cyan=0.0, magenta=0.0, yellow=0.0, key=1.0)
+
+    """
+
+
 
 @register_format(Formats)
 class Hex(String):
@@ -1772,6 +1800,82 @@ register_converter(Converters, RGB, HSV)(lambda rgb: colorsys.rgb_to_hsv(*rgb))
 register_converter(Converters, HSV, RGB)(lambda hsv: colorsys.hsv_to_rgb(*hsv))
 register_converter(Converters, RGB, YIQ)(lambda rgb: colorsys.rgb_to_yiq(*rgb))
 register_converter(Converters, YIQ, RGB)(lambda yiq: colorsys.yiq_to_rgb(*yiq))
+register_converter(Converters, RGB, CMY)(lambda rgb: tuple(1 - u for u in rgb))
+register_converter(Converters, CMY, RGB)(lambda rgb: tuple(1 - u for u in rgb))
+
+
+@register_converter(Converters, CMY, CMYK)
+def cmy2cmyk(cmy):
+    """Converts CMY representation to CMYK
+
+    :param cmy: 3-uple with cyan, magenta, yellow values
+    :rtype: 4-uple with cyan, magenta, yellow, key values
+
+    Usage
+    =====
+
+        >>> from colour import cmy2cmyk
+
+        >>> cmy2cmyk((0, 0, 0))
+        (0.0, 0.0, 0.0, 0.0)
+
+        >>> cmy2cmyk((1, 1, 1))
+        (0.0, 0.0, 0.0, 1.0)
+
+        >>> cmy2cmyk((0.5, 0.6, 0.7))  # doctest: +ELLIPSIS
+        (0.0, 0.19..., 0.39..., 0.5)
+
+        >>> cmy2cmyk((2, 0, 0))  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        ValueError: Cyan must be between 0 and 1. You provided 2.0.
+
+    """
+    c, m, y = [float(v) for v in cmy]
+
+    for name, v in {'Cyan': c, 'Magenta': m, 'Yellow': y}.items():
+        if not (0 - FLOAT_ERROR <= v <= 1 + FLOAT_ERROR):
+            raise ValueError("%s must be between 0 and 1. You provided %r."
+                             % (name, v))
+    k = min(c, m, y)
+    if k > 1 - FLOAT_ERROR:
+        return 0., 0., 0., k
+
+    inv = float(1 - k)
+
+    return tuple(((x - k) / inv) for x in cmy) + (k, )
+
+
+@register_converter(Converters, CMYK, CMY)
+def cmyk2cmy(cmyk):
+    """Converts CMY representation to CMYK
+
+    :param cmyk: 4-uple with cyan, magenta, yellow, key values
+    :rtype: 3-uple with cyan, magenta, yellow values
+
+    Usage
+    =====
+
+        >>> from colour import cmyk2cmy
+
+        >>> cmyk2cmy((0, 0, 0, 0))
+        (0.0, 0.0, 0.0)
+
+        >>> cmyk2cmy((0, 0, 0, 1))
+        (1.0, 1.0, 1.0)
+
+        >>> cmyk2cmy((2.0, 0, 0, 0))  # doctest: +ELLIPSIS
+        Traceback (most recent call last):
+        ...
+        ValueError: Cyan must be between 0 and 1. You provided 2.0.
+
+    """
+    c, m, y, k = cmyk
+    for name, v in {'Cyan': c, 'Magenta': m, 'Yellow': y, 'Key': k}.items():
+        if not (0 - FLOAT_ERROR <= v <= 1 + FLOAT_ERROR):
+            raise ValueError("%s must be between 0 and 1. You provided %r."
+                             % (name, v))
+    return tuple((float(x) * (1 - float(k))) + k for x in (c, m, y))
 
 
 class Color(mkDataSpace(formats=Formats, converters=Converters,
@@ -1959,16 +2063,23 @@ class Color(mkDataSpace(formats=Formats, converters=Converters,
         '#008000'
 
 
-    TODO: could add CMYK, YUV conversion.
+    CMY/CMYK Support
+    -----------
 
-#     >>> b.hsv
-#     >>> b.value
-#     >>> b.cyan
-#     >>> b.magenta
-#     >>> b.yellow
-#     >>> b.key
-#     >>> b.cmyk
+        >>> c = Color('green')
+        >>> c.cmyk  # doctest: +ELLIPSIS
+        CMYK(cyan=1.0, magenta=0.0, yellow=1.0, key=0.49...)
+        >>> c.key  # doctest: +ELLIPSIS
+        0.49...
 
+    Reversing a CMYK value to RGB::
+
+        >>> c = Color(c.cmyk)
+        >>> c.hex
+        '#008000'
+
+
+    TODO: could add YUV conversion.
 
     Recursive init
     --------------

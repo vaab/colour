@@ -492,6 +492,29 @@ class ConverterRegistry(list):
             % (src_format, dst_format))
 
 
+class Matrix(object):
+    """Simple matrix calculus
+
+        >>> Matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]])([1, 2, 3])
+        (1, 2, 3)
+
+        >>> Matrix([[1, 0, 0], [0, 2, 0], [0, 0, 3]]) * [1, 1, 1]
+        (1, 2, 3)
+
+    """
+
+    def __init__(self, m):
+        self._m = m
+
+    def __call__(self, v):
+        return tuple(
+            sum(x1 * x2 for x1, x2 in zip(u, v))
+            for u in self._m)
+
+    def __mul__(self, v):
+        return self.__call__(v)
+
+
 def register_converter(registry, src, dst, **kwargs):
 
     def decorator(f):
@@ -1299,6 +1322,18 @@ class CMYK(Tuple("cyan", "magenta", "yellow", "key")):
 
     """
 
+@register_format(Formats)
+class YUV(Tuple("luma", "u", "v")):
+    """3-uple of Luma, U, V.
+
+    Luma is between 0.0 and 1.0, U and V are coordinate
+    with values between -1.0 and 1.0.
+
+        >>> YUV.blue
+        YUV(luma=0.114, u=0.436, v=-0.10001)
+
+    """
+
 
 
 @register_format(Formats)
@@ -1878,6 +1913,54 @@ def cmyk2cmy(cmyk):
     return tuple((float(x) * (1 - float(k))) + k for x in (c, m, y))
 
 
+RGB_TO_YUV = Matrix([
+    [0.299, 0.587, 0.114],
+    [-0.14713, -0.28886, 0.436],
+    [0.615, -0.51499, -0.10001],
+])
+
+
+@register_converter(Converters, RGB, YUV)
+def rgb2yuv(rgb):
+    """Converting from RGB to YUV using BT.709 conversion
+
+    cf. https://en.wikipedia.org/wiki/YUV
+
+        >>> rgb2yuv((1., 0., 0.))
+        (0.299, -0.14713, 0.615)
+
+    """
+    return RGB_TO_YUV(rgb)
+
+
+## Use:
+##
+##     >>> import colour
+##     >>> from numpy import matrix, linalg
+##     >>> print (linalg.inv(RGB_TO_YUV))
+##
+## To get the reverse matrix.
+YUV_TO_RGB = Matrix([
+    [1., -0.0000117983844, 1.13983458],
+    [1.00000395, -0.394646053, -0.580594234],
+    [0.999979679, 2.03211194, -0.0000151129807],
+])
+
+
+@register_converter(Converters, YUV, RGB)
+def yuv2rgb(yuv):
+    """Converting from YUV to RGB using BT.709 conversion
+
+    cf. https://en.wikipedia.org/wiki/YUV
+
+        >>> yuv2rgb((1., 0., 0.))  # doctest: +ELLIPSIS
+        (1.0, 1.0..., 0.99...)
+
+    """
+
+    return YUV_TO_RGB(yuv)
+
+
 class Color(mkDataSpace(formats=Formats, converters=Converters,
                         picker=RGB_color_picker)):
     """Abstraction of a color object
@@ -1931,6 +2014,8 @@ class Color(mkDataSpace(formats=Formats, converters=Converters,
         '#0000ff'
         >>> b.web
         'blue'
+        >>> b.yuv  # doctest: +ELLIPSIS
+        YUV(luma=0.114, u=0.436, v=-0.10001)
 
     Change values
     -------------
@@ -2046,7 +2131,6 @@ class Color(mkDataSpace(formats=Formats, converters=Converters,
         >>> c.hsl_saturation  # doctest: +ELLIPSIS
         1.0
 
-
     YIQ Support
     -----------
 
@@ -2078,8 +2162,6 @@ class Color(mkDataSpace(formats=Formats, converters=Converters,
         >>> c.hex
         '#008000'
 
-
-    TODO: could add YUV conversion.
 
     Recursive init
     --------------

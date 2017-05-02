@@ -147,6 +147,8 @@ Several representations are accessible::
     CMYK(cyan=1.0, magenta=1.0, yellow=0.0, key=0.0)
     >>> c.rgb
     RGB(red=0.0, green=0.0, blue=1.0)
+    >>> c.yuv
+    YUV(luma=0.114, u=0.436, v=-0.10001)
 
 These last values are ``namedtuple`` and can be used as normal tuples.
 

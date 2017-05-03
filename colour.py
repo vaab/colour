@@ -414,6 +414,7 @@ def rgb2hsl(rgb):
     red, green and blue:
 
     >>> rgb2hsl((0.9999999999999999, 1.0, 0.9999999999999994))
+    ...     ## doctest: +ELLIPSIS
     (0.0, 0.0, 0.999...)
 
     Of course:

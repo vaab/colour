@@ -1573,20 +1573,16 @@ def rgb2hsl(rgb):
         s = diff / vsum
     else:
         s = diff / (2.0 - vsum)
+    dr, dg, db = tuple((vmax - x) / diff for x in (r, g, b))
 
-    dr = (((vmax - r) / 6) + (diff / 2)) / diff
-    dg = (((vmax - g) / 6) + (diff / 2)) / diff
-    db = (((vmax - b) / 6) + (diff / 2)) / diff
+    h =       db - dg if r == vmax else \
+         2. + dr - db if g == vmax else \
+         4. + dg - dr
 
-    if r == vmax:
-        h = db - dg
-    elif g == vmax:
-        h = (1.0 / 3) + dr - db
-    else:  ##  b == vmax
-        h = (2.0 / 3) + dg - dr
+    h /= 6
 
-    if h < 0: h += 1
-    if h > 1: h -= 1
+    while h < 0: h += 1
+    while h > 1: h -= 1
 
     return h, s, l
 

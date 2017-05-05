@@ -9,10 +9,15 @@ install:
   - pip install coverage
   - python setup.py develop easy_install "$(./autogen.sh --get-name)[test]"  ## getting deps
 script:
-  - nosetests -sx .
+  - nosetests -sx .  ## will collect coverage reports
+  ## yes, the following is redundant and weaker than nosetests, but
+  ## for now I want to ensure that it works with a simpler
+  ## configuration:
+  - python -m doctest colour.py
+  - python -m doctest README.rst
 after_success:
   - "bash <(curl -s https://codecov.io/bash)  #dovis: ignore"
-
+  - if [ "$DOVIS" -a -d "$ARTIFACT_DIR" ]; then cp ".coverage" "$ARTIFACT_DIR"; echo "$PWD" > "$ARTIFACT_DIR/cover_path"; fi
 
 ## Ignored by Travis, but used internally to check packaging
 dist_check:

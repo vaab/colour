@@ -37,25 +37,37 @@ Converts and manipulates common color representation (RGB, HSL, web, ...)
 Feature
 =======
 
+- one small file package, no dependencies, 100% tests full coverage,
+  fully documented.
+
 - Damn simple and pythonic way to manipulate color representation (see
   examples below)
 
-- Full conversion between RGB, HSL, 6-digit hex, 3-digit hex, human color
-
-- One object (``Color``) or bunch of single purpose function (``rgb2hex``,
-  ``hsl2rgb`` ...)
+- Full conversion between RGB, HSL, HSV, YIQ, CMY, CMYK web ready
+  format (see next point)
 
 - ``web`` format that use the smallest representation between
   6-digit (e.g. ``#fa3b2c``), 3-digit (e.g. ``#fbb``), fully spelled
   color (e.g. ``white``), following `W3C color naming`_ for compatible
   CSS or HTML color specifications.
 
+- One object (``Color``) or bunch of single purpose function (``rgb2hex``,
+  ``hsl2rgb`` ...)
+
 - smooth intuitive color scale generation choosing N color gradients.
 
 - can pick colors for you to identify objects of your application.
 
-
 .. _W3C color naming: http://www.w3.org/TR/css3-color/#svg-color
+
+
+Requirements
+============
+
+``colour`` is compatible Python 2 and Python 3 on
+Linux/BSD/MacOSX and Windows.
+
+Please submit an issue if you encounter incompatibilities.
 
 
 Installation
@@ -105,10 +117,10 @@ Please note that all of these are equivalent examples to create the red color::
 
     Color("red")           ## human, web compatible representation
     Color(red=1)           ## default amount of blue and green is 0.0
-    Color("blue", hue=0)   ## hue of blue is 0.66, hue of red is 0.0
+    Color("blue", hsl_hue=0)   ## hue of blue is 0.66, hue of red is 0.0
     Color("#f00")          ## standard 3 hex digit web compatible representation
     Color("#ff0000")       ## standard 6 hex digit web compatible representation
-    Color(hue=0, saturation=1, luminance=0.5)
+    Color(hsl_hue=0, hsl_saturation=1, hsl_luminance=0.5)
     Color(hsl=(0, 1, 0.5)) ## full 3-uple HSL specification
     Color(rgb=(1, 0, 0))   ## full 3-uple RGB specification
     Color(Color("red"))    ## recursion doesn't break object
@@ -120,14 +132,28 @@ Reading values
 Several representations are accessible::
 
     >>> c.hex
+    '#0000ff'
+    >>> c.hexs
     '#00f'
+    >>> c.web
+    'blue'
     >>> c.hsl  # doctest: +ELLIPSIS
-    (0.66..., 1.0, 0.5)
+    HSL(hue=0.66..., saturation=1.0, luminance=0.5)
+    >>> c.hsv  # doctest: +ELLIPSIS
+    HSV(hue=0.66..., saturation=1.0, value=1.0)
+    >>> c.yiq  # doctest: +ELLIPSIS
+    YIQ(luma=0.11, inphase=-0.32..., quadrature=0.31...)
+    >>> c.cmyk  # doctest: +ELLIPSIS
+    CMYK(cyan=1.0, magenta=1.0, yellow=0.0, key=0.0)
     >>> c.rgb
-    (0.0, 0.0, 1.0)
+    RGB(red=0.0, green=0.0, blue=1.0)
+    >>> c.yuv
+    YUV(luma=0.114, u=0.436, v=-0.10001)
 
-And their different parts are also independently accessible, as the different
-amount of red, blue, green, in the RGB format::
+These last values are ``namedtuple`` and can be used as normal tuples.
+
+And their different sub values are also independently accessible, as
+the different amount of red, blue, green, in the RGB format::
 
     >>> c.red
     0.0
@@ -136,21 +162,43 @@ amount of red, blue, green, in the RGB format::
     >>> c.green
     0.0
 
+Here the format is inferred to be RGB (it is the only format available
+having components named as these attributes), but you may want to be
+more explicit, by prefixing the attribute by the format name in lower
+case, so::
+
+    >>> c.rgb_red == c.red
+    True
+
+So, in the previous example, attributes are resolved as names of component
+of the RGB format. In some case, as for ``saturation``, it could
+be ambiguous to which format you are referring as more than one format
+((HSV and HSL) have a ``saturation`` component that are not valued the
+same way. If this happens, you'll get an exception::
+
+    >>> c.saturation
+    Traceback (most recent call last):
+    ...
+    ValueError: Ambiguous attribute 'saturation'. Try one of: hsl_saturation, hsv_saturation
+
+    >>> c.hsl_saturation
+    1.0
+
 Or the hue, saturation and luminance of the HSL representation::
 
-    >>> c.hue  # doctest: +ELLIPSIS
+    >>> c.hsl_hue  # doctest: +ELLIPSIS
     0.66...
-    >>> c.saturation
+    >>> c.hsl_saturation
     1.0
-    >>> c.luminance
+    >>> c.hsl_luminance
     0.5
 
-A note on the ``.hex`` property, it'll return the smallest valid value
-when possible. If you are only interested by the long value, use
-``.hex_l``::
+A note on the ``.hex`` property: it'll return the 6 hexadigit, if you
+needed the version of this format that allow short 3 hexadigit when possible,
+use ``hexs`` format::
 
-    >>> c.hex_l
-    '#0000ff'
+    >>> c.hexs
+    '#00f'
 
 
 Modifying color objects
@@ -164,7 +212,7 @@ All of these properties are read/write, so let's add some red to this color::
 
 We might want to de-saturate this color::
 
-    >>> c.saturation = 0.5
+    >>> c.hsl_saturation = 0.5
     >>> c
     <Color #bf40bf>
 
@@ -221,7 +269,7 @@ Color comparison is a vast subject. However, it might seem quite straightforward
 you. ``Colour`` uses a configurable default way of comparing color that might suit
 your needs::
 
-    >>> Color("red") == Color("#f00") == Color("blue", hue=0)
+    >>> Color("red") == Color("#f00") == Color("blue", hsl_hue=0)
     True
 
 The default comparison algorithm focuses only on the "web" representation which is
@@ -265,7 +313,7 @@ As you might have already guessed, the sane default is ``RGB_equivalence``, so::
 
 Here's how you could implement your unique comparison function::
 
-   >>> saturation_equivalence = lambda c1, c2: c1.saturation == c2.saturation
+   >>> saturation_equivalence = lambda c1, c2: c1.hsl_saturation == c2.hsl_saturation
    >>> red = Color("red", equality=saturation_equivalence)
    >>> blue = Color("blue", equality=saturation_equivalence)
    >>> white = Color("white", equality=saturation_equivalence)
@@ -343,6 +391,7 @@ And inequality (using ``__ne__``) are also polite::
 Picking arbitrary color for a python object
 -------------------------------------------
 
+
 Basic Usage
 ~~~~~~~~~~~
 
@@ -362,6 +411,7 @@ same for same objects, and different for different object::
 
 Of course, although there's a tiny probability that different strings yield the
 same color, most of the time, different inputs will produce different colors.
+
 
 Advanced Usage
 ~~~~~~~~~~~~~~
@@ -390,9 +440,22 @@ Thus::
     >>> my_obj_color == my_str_color
     False
 
+And with unhashable types... here we consider as equivalent two
+instances with same ``str`` representation::
+
+    >>> class MyObj(dict): pass
+    >>> my_dict = MyObj(foo=1)
+    >>> my_obj_color = Color(pick_for=my_dict)
+    >>> new_dict = MyObj()  ## new_dict has not the same content as my_dict yet
+    >>> Color(pick_for=my_dict) == Color(pick_for=new_dict)
+    False
+    >>> new_dict["foo"] = 1  ## now they have equivalent string representation
+    >>> Color(pick_for=my_dict) == Color(pick_for=new_dict)
+    True
+
 Please make sure your object is hashable or "stringable" before using the
 ``RGB_color_picker`` picking mechanism or provide another color picker. Nearly
-all python object are hashable by default so this shouldn't be an issue (e.g. 
+all python object are hashable by default so this shouldn't be an issue (e.g.
 instances of ``object`` and subclasses are hashable).
 
 Neither ``hash`` nor ``str`` are perfect solution. So feel free to use
@@ -436,7 +499,7 @@ would get the specified attributes by default::
     >>> black_red = get_color("red", luminance=0)
     >>> black_blue = get_color("blue", luminance=0)
 
-Of course, these are always instances of ``Color`` class::
+Of course, these are still instances of ``Color`` class::
 
     >>> isinstance(black_red, Color)
     True

@@ -37,7 +37,17 @@ before_test:
 test_script:
 
   ## real tests
-  - nosetests -sx .
+  - nosetests -sx .  ## collects coverage reports
+  ## yes, the following is redundant and weaker than nosetests, but
+  ## for now I want to ensure that it works with a simpler
+  ## configuration:
+  - python -m doctest colour.py
+  - python -m doctest README.rst
 
 after_test:
   - "codecov & REM  #dovis: ignore"
+  - |
+    IF DEFINED DOVIS IF DEFINED ARTIFACT_DIR (
+        cp .coverage %ARTIFACT_DIR%
+        echo %cd% > %ARTIFACT_DIR%/cover_path
+    )

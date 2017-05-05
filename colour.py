@@ -420,30 +420,58 @@ class ConverterRegistry(list):
         >>> cr.convert_fun("hex", "dec")("15")
         21
 
+    The most convenient way to access convertors is to use the
+    'xxx2yyy' attributes of a ``ConverterRegistry``, so the last
+    instruction is equivalent to::
+
+        >>> cr.hex2dec("15")
+        21
+
     Note that this is provided directly by only one converter, in the following
     2 converters will be used to get to the answer::
 
-        >>> cr.convert_fun("hex", "bin")("15")
+        >>> cr.hex2bin("15")
         '0b10101'
 
     When source and destination format are equivalent, this will make not change
     on the output::
 
-        >>> cr.convert_fun("hex", "hex")("15")
+        >>> cr.hex2hex("15")
         '15'
 
     And if no path exists it'll cast an exception::
 
-        >>> cr.convert_fun("bin", "hex")("0101")
+        >>> cr.bin2hex("0101")
         Traceback (most recent call last):
         ...
         ValueError: No convertion path found from bin to hex format.
+
+    If one of the 2 part of 'xxx2yyy' is not a valid format label,
+    it will complain::
+
+        >>> cr.foo2hex("0101")
+        Traceback (most recent call last):
+        ...
+        AttributeError: Unknown format labeled foo.
+
+        >>> cr.hex2foo("0101")
+        Traceback (most recent call last):
+        ...
+        AttributeError: Unknown format labeled foo.
+
+
+    If not a 'xxx2yyy' format, it'll cast normal attribute error::
+
+        >>> cr.foo("0101")
+        Traceback (most recent call last):
+        ...
+        AttributeError: no attribute 'foo'
 
     Note that if the functions have already been annotated, then you
     can instantiate directly a new ``ConverterRegistry``::
 
         >>> new_cr = ConverterRegistry(cr)
-        >>> new_cr.convert_fun("hex", "bin")("15")
+        >>> new_cr.hex2bin("15")
         '0b10101'
 
     """
@@ -452,6 +480,14 @@ class ConverterRegistry(list):
         if converters is None:
             converters = []
         super(ConverterRegistry, self).__init__(converters)
+
+    @property
+    def formats(self):
+        def i():
+            for cv in self:
+                yield cv.src
+                yield cv.dst
+        return set(i())
 
     def get(self, src):
         return {cv.dst: (cv, cv.conv_kwargs)
@@ -487,9 +523,28 @@ class ConverterRegistry(list):
         path = self.find_path(src_format, dst_format)
         if path:
             return _path_to_callable(path)
+        path = self.find_path(src_format, dst_format)
         raise ValueError(
             "No convertion path found from %s to %s format."
             % (src_format, dst_format))
+
+    def __getattr__(self, label):
+        m = re.match("(?P<src>[a-zA-Z0-9_]+)2(?P<dst>[a-zA-Z0-9_]+)", label)
+        if m is None:
+            raise AttributeError(
+                'no attribute %r'
+                % (label, ))
+        dct = m.groupdict()
+        for target, label in list(dct.items()):
+            for f in self.formats:
+                if str(f) == label:
+                    dct["c%s" % target] = f
+                    break
+            else:
+                raise AttributeError(
+                    "Unknown format labeled %s."
+                    % (label, ))
+        return self.convert_fun(dct["csrc"], dct["cdst"])
 
 
 class Matrix(object):

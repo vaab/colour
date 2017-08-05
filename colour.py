@@ -1008,6 +1008,13 @@ class Color(object):
             self.__dict__[label] = value
 
     ##
+    ## Integration with hex() builtin
+    ##
+
+    def __hex__(self):
+        return self.hex_l
+
+    ##
     ## Get
     ##
 

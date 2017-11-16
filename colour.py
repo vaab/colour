@@ -266,7 +266,7 @@ HEX = C_HEX()
 
 
 ##
-## Convertion function
+## Conversion function
 ##
 
 def hsl2rgb(hsl):
@@ -287,7 +287,7 @@ def hsl2rgb(hsl):
     This algorithm came from:
     http://www.easyrgb.com/index.php?X=MATH&H=19#text19
 
-    Here are some quick notion of HSL to RGB convertion:
+    Here are some quick notion of HSL to RGB conversion:
 
     >>> from colour import hsl2rgb
 
@@ -378,7 +378,7 @@ def rgb2hsl(rgb):
     This algorithm came from:
     http://www.easyrgb.com/index.php?X=MATH&H=19#text19
 
-    Here are some quick notion of RGB to HSL convertion:
+    Here are some quick notion of RGB to HSL conversion:
 
     >>> from colour import rgb2hsl
 
@@ -576,7 +576,7 @@ def hex2web(hex):
     :param rgb: 3 hex char or 6 hex char string representation
     :rtype: web string representation (human readable if possible)
 
-    WEB representation uses X11 rgb.txt to define convertion
+    WEB representation uses X11 rgb.txt to define conversion
     between RGB and english color names.
 
     Usage
@@ -620,7 +620,7 @@ def web2hex(web, force_long=False):
     :param rgb: web string representation (human readable if possible)
     :rtype: 3 hex char or 6 hex char string representation
 
-    WEB representation uses X11 rgb.txt to define convertion
+    WEB representation uses X11 rgb.txt to define conversion
     between RGB and english color names.
 
     Usage
@@ -680,7 +680,7 @@ def web2hex(web, force_long=False):
                    force_long)
 
 
-## Missing functions convertion
+## Missing functions conversion
 
 hsl2hex = lambda x: rgb2hex(hsl2rgb(x))
 hex2hsl = lambda x: rgb2hsl(hex2rgb(x))
@@ -928,7 +928,7 @@ class Color(object):
     Recursive init
     --------------
 
-    To support blind convertion of web strings (or already converted object),
+    To support blind conversion of web strings (or already converted object),
     the Color object supports instantiation with another Color object.
 
         >>> Color(Color(Color('red')))

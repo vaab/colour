@@ -485,7 +485,7 @@ would show you how to deal with your issue.
 License
 =======
 
-Copyright (c) 2012-2015 Valentin Lab.
+Copyright (c) 2012-2017 Valentin Lab.
 
 Licensed under the `BSD License`_.
 

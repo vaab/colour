@@ -1111,6 +1111,9 @@ class Color(object):
             return equal if equal is NotImplemented else not equal
 
 
+Colour = Color
+
+
 RGB_equivalence = lambda c1, c2: c1.hex_l == c2.hex_l
 HSL_equivalence = lambda c1, c2: c1._hsl == c2._hsl
 

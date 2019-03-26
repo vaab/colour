@@ -742,11 +742,12 @@ def color_scale(begin_hsl, end_hsl, nb):
     else:
         step_s = 0.0
     cs = [(begin_h, begin_s, begin_l)]
-    for i in range(1, nb + 1):
+    for i in range(1, nb):
         new_h = cs[-1][0] + step_h
         if new_h > 1.0:
             new_h -= 1.0
         cs.append((new_h, cs[-1][1] + step_s, cs[-1][2] + step_l))
+    cs.append(end_hsl)
     return cs
 
 ##

@@ -742,7 +742,7 @@ def color_scale(begin_hsl, end_hsl, nb):
     else:
         step_s = 0.0
     cs = [(begin_h, begin_s, begin_l)]
-    for i in range(1, nb):
+    for i in range(1, nb + 1):
         new_h = cs[-1][0] + step_h
         if new_h > 1.0:
             new_h -= 1.0

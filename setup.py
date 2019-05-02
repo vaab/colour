@@ -20,7 +20,7 @@ except ImportError:
 ## Ensure that ``./autogen.sh`` is run prior to using ``setup.py``
 ##
 
-if "%%short-version%%".startswith("%%"):
+if "0.1.5".startswith("%%"):
     import os.path
     import sys
     WIN32 = sys.platform == 'win32'

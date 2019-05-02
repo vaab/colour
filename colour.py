@@ -717,18 +717,38 @@ def color_scale(begin_hsl, end_hsl, nb):
     if nb < 0:
         raise ValueError(
             "Unsupported negative number of colors (nb=%r)." % nb)
-
-    step = tuple([float(end_hsl[i] - begin_hsl[i]) / nb for i in range(0, 3)]) \
-           if nb > 0 else (0, 0, 0)
-
-    def mul(step, value):
-        return tuple([v * value for v in step])
-
-    def add_v(step, step2):
-        return tuple([v + step2[i] for i, v in enumerate(step)])
-
-    return [add_v(begin_hsl, mul(step, r)) for r in range(0, nb + 1)]
-
+    end_h = end_hsl[0]
+    begin_h = begin_hsl[0]
+    end_s = end_hsl[1]
+    begin_s = begin_hsl[1]
+    end_l = end_hsl[2]
+    begin_l = begin_hsl[2]
+    # if distance through 1 is shorter than distance between, then we want to
+    # cycle through 1.0 instead of going all the way through all hues to get
+    # back to the color we want
+    if abs(end_h - begin_h) > abs((1.0 - begin_h) + end_h):
+        step_h = abs((1.0 - begin_h) + end_h) / nb
+    else:
+        if end_h != begin_h:
+            step_h = (end_h - begin_h) / nb
+        else:
+            step_h = 0.0
+    if end_l != begin_l:
+        step_l = (end_l - begin_l) / nb
+    else:
+        step_l = 0.0
+    if end_s != begin_s:
+        step_s = (end_s - begin_s) / nb
+    else:
+        step_s = 0.0
+    cs = [(begin_h, begin_s, begin_l)]
+    for i in range(1, nb):
+        new_h = cs[-1][0] + step_h
+        if new_h > 1.0:
+            new_h -= 1.0
+        cs.append((new_h, cs[-1][1] + step_s, cs[-1][2] + step_l))
+    cs.append(end_hsl)
+    return cs
 
 ##
 ## Color Pickers

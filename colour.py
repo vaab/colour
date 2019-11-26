@@ -1124,8 +1124,8 @@ class Color(object):
 
     ## range of color generation
 
-    def range_to(self, value, steps):
-        for hsl in color_scale(self._hsl, Color(value).hsl, steps - 1):
+    def range_to(self, value, steps, longer=False):
+        for hsl in color_scale(self._hsl, Color(value).hsl, steps - 1, longer=longer):
             yield Color(hsl=hsl)
 
     ##

@@ -187,7 +187,9 @@ easily. Here, is the color scale of the rainbow between red and blue::
 
     >>> red = Color("red")
     >>> blue = Color("blue")
-    >>> list(red.range_to(blue, 5))
+    >>> list(red.range_to(blue, 3))
+    [<Color red>, <Color magenta>, <Color blue>]
+    >>> list(red.range_to(blue, 5, longer=True))
     [<Color red>, <Color yellow>, <Color lime>, <Color cyan>, <Color blue>]
 
 Or the different amount of gray between black and white::

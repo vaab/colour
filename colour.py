@@ -690,16 +690,52 @@ web2hsl = lambda x: rgb2hsl(web2rgb(x))
 hsl2web = lambda x: rgb2web(hsl2rgb(x))
 
 
-def color_scale(begin_hsl, end_hsl, nb):
+def color_scale(begin_hsl, end_hsl, nb, longer=False):
     """Returns a list of nb color HSL tuples between begin_hsl and end_hsl
 
     >>> from colour import color_scale
 
-    >>> [rgb2hex(hsl2rgb(hsl)) for hsl in color_scale((0, 1, 0.5),
-    ...                                               (1, 1, 0.5), 3)]
+    >>> [rgb2hex(hsl2rgb(hsl)) for hsl in color_scale((0, 1, 0.5), # longer, as is
+    ...                                               (1, 1, 0.5), 3, longer=True)]
     ['#f00', '#0f0', '#00f', '#f00']
 
-    >>> [rgb2hex(hsl2rgb(hsl))
+    >>> [rgb2hex(hsl2rgb(hsl)) for hsl in color_scale( # longer, as is, backwards
+    ...     (1, 1, 0.5),
+    ...     (0, 1, 0.5),
+    ...     3, longer=True)]
+    ['#f00', '#00f', '#0f0', '#f00']
+
+    >>> [rgb2hex(hsl2rgb(hsl)) for hsl in color_scale( # shorter, h1 incremented
+    ...     (0, 1, 0.5), # lower red
+    ...     (1, 1, 0.5), # higher red
+    ...     3)]
+    ['#f00', '#f00', '#f00', '#f00']
+
+    >>> [rgb2hex(hsl2rgb(hsl)) for hsl in color_scale( # shorter, h2 incremented
+    ...     (1, 1, 0.5), # lower red
+    ...     (0, 1, 0.5), # higher red
+    ...     3)]
+    ['#f00', '#f00', '#f00', '#f00']
+
+    >>> [rgb2hex(hsl2rgb(hsl)) for hsl in color_scale( # shorter, as is
+    ...     (1./3, 1, 0.5), # green
+    ...     (2./3, 1, 0.5), # blue
+    ...     3)]
+    ['#0f0', '#0fa', '#0af', '#00f']
+
+    >>> [rgb2hex(hsl2rgb(hsl)) for hsl in color_scale( # longer, h1 incremented
+    ...     (1./3, 1, 0.5), # green
+    ...     (2./3, 1, 0.5), # blue
+    ...     3, longer=True)]
+    ['#0f0', '#fa0', '#f0a', '#00f']
+
+    >>> [rgb2hex(hsl2rgb(hsl)) for hsl in color_scale( # longer, h2 incremented
+    ...     (2./3, 1, 0.5), # green
+    ...     (1./3, 1, 0.5), # blue
+    ...     3, longer=True)]
+    ['#00f', '#f0a', '#fa0', '#0f0']
+
+    >>> [rgb2hex(hsl2rgb(hsl)) #luminosity interpolation
     ...  for hsl in color_scale((0, 0, 0),
     ...                         (0, 0, 1),
     ...                         15)]  # doctest: +ELLIPSIS
@@ -718,16 +754,19 @@ def color_scale(begin_hsl, end_hsl, nb):
         raise ValueError(
             "Unsupported negative number of colors (nb=%r)." % nb)
 
-    step = tuple([float(end_hsl[i] - begin_hsl[i]) / nb for i in range(0, 3)]) \
-           if nb > 0 else (0, 0, 0)
-
-    def mul(step, value):
-        return tuple([v * value for v in step])
-
-    def add_v(step, step2):
-        return tuple([v + step2[i] for i, v in enumerate(step)])
-
-    return [add_v(begin_hsl, mul(step, r)) for r in range(0, nb + 1)]
+    h1,s1,l1 = begin_hsl
+    h2,s2,l2 = end_hsl
+    if longer == (abs(h1-h2)<0.5):
+        if h1<h2:
+            h1+=1
+        else:
+            h2+=1
+    return [(
+        (h1*(1-v) + h2*v)%1,
+        s1*(1-v) + s2*v,
+        l1*(1-v) + l2*v)
+        for v in (float(step)/(nb) for step in range(nb+1))
+    ]
 
 
 ##

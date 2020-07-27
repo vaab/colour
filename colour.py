@@ -1091,8 +1091,9 @@ class Color(object):
             yield Color(hsl=hsl)
 
     @classmethod
-    def random(cls):
-        return cls(rgb=(random.random() for _ in range(3)))
+    def random(cls, *args, **kwargs):
+        kwargs['rgb'] = tuple(random.random() for _ in range(3))
+        return cls(*args, **kwargs)
 
     ##
     ## Convenience
@@ -1127,3 +1128,12 @@ def make_color_factory(**kwargs_defaults):
         new_kwargs.update(kwargs)
         return Color(*args, **new_kwargs)
     return ColorFactory
+
+
+def random_color_factory(**kwargs_defaults):
+
+    def RandomColorFactory(*args, **kwargs):
+        new_kwargs = kwargs_defaults.copy()
+        new_kwargs.update(kwargs)
+        return Color.random(*args, **new_kwargs)
+    return RandomColorFactory

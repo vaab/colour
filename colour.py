@@ -39,6 +39,7 @@ from __future__ import with_statement, print_function
 import hashlib
 import re
 import sys
+import random
 
 
 ##
@@ -1088,6 +1089,10 @@ class Color(object):
     def range_to(self, value, steps):
         for hsl in color_scale(self._hsl, Color(value).hsl, steps - 1):
             yield Color(hsl=hsl)
+
+    @classmethod
+    def random(cls):
+        return cls(rgb=(random.random() for _ in range(3)))
 
     ##
     ## Convenience

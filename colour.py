@@ -39,7 +39,7 @@ from __future__ import with_statement, print_function
 import hashlib
 import re
 import sys
-
+from XKCD_colour_definition import *
 
 ##
 ## Some Constants
@@ -191,6 +191,8 @@ RGB_TO_COLOR_NAMES = {
     (255, 255, 240): ['Ivory'],
     (255, 255, 255): ['White']
 }
+
+COLOR_NAME_TO_RGB.update(XKCD_RGB_TO_COLOR_NAMES)
 
 ## Building inverse relation
 COLOR_NAME_TO_RGB = dict(

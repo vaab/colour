@@ -112,6 +112,7 @@ Please note that all of these are equivalent examples to create the red color::
     Color(hsl=(0, 1, 0.5)) ## full 3-uple HSL specification
     Color(rgb=(1, 0, 0))   ## full 3-uple RGB specification
     Color(Color("red"))    ## recursion doesn't break object
+    Color(xkcd="baby_blue")## XKCD color naming scheme (based on this article https://blog.xkcd.com/2010/05/03/color-survey-results/)
 
 
 Reading values

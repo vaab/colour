@@ -34,12 +34,12 @@ Please see the documentation of this object for more information.
 
 """
 
-from __future__ import with_statement, print_function
+from __future__ import print_function, with_statement
 
 import hashlib
 import re
 import sys
-
+import tkinter
 
 ##
 ## Some Constants

@@ -1093,6 +1093,13 @@ class Color(object):
     ## Convenience
     ##
 
+    def preview(self, geometry=(100, 100)):
+        pass
+
+    ##
+    ## Dunder
+    ##
+
     def __str__(self):
         return "%s" % self.web
 

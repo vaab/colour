@@ -34,12 +34,12 @@ Please see the documentation of this object for more information.
 
 """
 
-from __future__ import with_statement, print_function
+from __future__ import print_function, with_statement
 
 import hashlib
 import re
 import sys
-
+import tkinter
 
 ##
 ## Some Constants
@@ -1091,6 +1091,26 @@ class Color(object):
 
     ##
     ## Convenience
+    ##
+
+    def preview(self, geometry=(200, 200)):
+        if len(geometry) != 2:
+            raise ValueError("Geometry must have a length of 2")
+
+        for i in geometry:
+            if not isinstance(i, int):
+                raise TypeError("Geometry must be a collection of integers")
+
+        root = tkinter.Tk()
+
+        root.geometry(f"{geometry[0]}x{geometry[1]}")
+        root.config(background=self.get_hex_l())
+        root.title("Colour preview")
+
+        root.mainloop()
+
+    ##
+    ## Dunder
     ##
 
     def __str__(self):

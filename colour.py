@@ -1093,8 +1093,14 @@ class Color(object):
     ## Convenience
     ##
 
-    def preview(self, geometry=(100, 100)):
-        pass
+    def preview(self, geometry=(200, 200)):
+        root = tkinter.Tk()
+
+        root.geometry(f"{geometry[0]}x{geometry[1]}")
+        root.config(background=self.get_hex_l())
+        root.title("Colour preview")
+
+        root.mainloop()
 
     ##
     ## Dunder

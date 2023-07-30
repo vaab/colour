@@ -54,12 +54,4 @@ if "%%short-version%%".startswith("%%"):
     sys.exit(errlvl)
 
 
-##
-## Normal d2to1 setup
-##
-
-setup(
-    setup_requires=['d2to1'],
-    extras_require={'test': ['nose', ]},
-    d2to1=True
-)
+setup(extras_require={'test': ['nose', ]})
